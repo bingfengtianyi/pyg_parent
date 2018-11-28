@@ -5,7 +5,15 @@ app.service('orderService',function($http){
     }
 
     this.findTotalMoneyBySellerId = function () {
-        return $http.get("../order/findTotalMoney.action?")
+        return $http.get("../order/findTotalMoney.action")
+    }
+
+    this.findOrderCountByTime = function (startTime,endTime) {
+        return $http.get("../order/findOrderCountByTime.action?startTime="+startTime+"endTime="+endTime);
+    }
+
+    this.findTotalMoneyBySellerId = function () {
+        return $http.get("../order/findTotalMoneyBySellerId.action");
     }
 
 });

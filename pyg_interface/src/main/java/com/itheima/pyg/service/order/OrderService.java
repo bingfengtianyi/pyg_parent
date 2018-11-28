@@ -1,10 +1,13 @@
 package com.itheima.pyg.service.order;
 
+import com.itheima.pyg.entity.BImageResult;
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.entity.ZImageResult;
 import com.itheima.pyg.pojo.log.PayLog;
 import com.itheima.pyg.pojo.order.Order;
 import com.itheima.pyg.pojo.user.User;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
@@ -28,4 +31,8 @@ public interface OrderService {
 
 
     PageResult<Order> getOrderListByPage(Integer pageNum, Integer pageSize);
+
+    ZImageResult findOrderCountByTime(Date startTime, Date endTime);
+
+    BImageResult findTotalMoneyBySellerId();
 }

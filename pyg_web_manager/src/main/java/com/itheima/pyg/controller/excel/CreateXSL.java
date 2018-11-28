@@ -108,7 +108,7 @@ public class CreateXSL {
                 "status", "headPic", "qq", "accountBalance", "isMobileCheck", "isEmailCheck", "sex", "userLevel",
                 "points", "experienceValue", "birthday", "lastLoginTime"
         };
-        ExcelUtils.exportExcel(response, userList, columnNames, columns, "用户表", "E:\\test.html");
+        ExcelUtils.exportExcel(response, userList, columnNames, columns, "用户表", "E:\\user.html");
     }
 
     @RequestMapping("importexcel")
@@ -294,6 +294,18 @@ public class CreateXSL {
                 "id","name","specIds","brandIds","customAttributeItems"
         };
         ExcelUtils.exportExcel(response, typeTemplateList, columnNames, columns, "模板表", "template");
+    }
+
+    @RequestMapping("exportexcelForItemCat")
+    public void exportexcelForItemCat(HttpServletResponse response) {
+        List<ItemCat> itemCatList = itemCatService.findAll();
+        String[] columnNames = {
+                "类目ID", "父类目ID","类目名称","类型ID"
+        };
+        String[] columns = {
+                "id","parentID","name","typeId"
+        };
+        ExcelUtils.exportExcel(response, itemCatList, columnNames, columns, "分类表", "itemCat");
     }
 
 }

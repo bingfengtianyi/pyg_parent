@@ -7,13 +7,17 @@ import com.itheima.pyg.dao.item.ItemDao;
 import com.itheima.pyg.dao.log.PayLogDao;
 import com.itheima.pyg.dao.order.OrderDao;
 import com.itheima.pyg.dao.order.OrderItemDao;
+import com.itheima.pyg.dao.seller.SellerDao;
+import com.itheima.pyg.entity.BImageResult;
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.entity.ZImageResult;
 import com.itheima.pyg.entity.vo.Cart;
 import com.itheima.pyg.pojo.item.Item;
 import com.itheima.pyg.pojo.log.PayLog;
 import com.itheima.pyg.pojo.order.Order;
 import com.itheima.pyg.pojo.order.OrderItem;
 import com.itheima.pyg.pojo.order.OrderQuery;
+import com.itheima.pyg.pojo.seller.Seller;
 import com.itheima.pyg.pojo.user.User;
 import com.itheima.pyg.util.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +25,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,6 +49,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ItemDao itemDao;
+
+    @Autowired
+    private SellerDao sellerDao;
 
     /**
      * 分页获得订单列表
@@ -207,5 +214,85 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrderList() {
         return orderDao.selectByExample(null);
+    }
+
+    /**
+     * 运营商后台根据时间查询订单量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public ZImageResult findOrderCountByTime(Date startTime, Date endTime) {
+        ZImageResult result = new ZImageResult();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+        Map<String,Long> resultMap = new HashMap<>();
+        List<String> list = new ArrayList<>();
+        String date = null;
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andCreateTimeGreaterThanOrEqualTo(startTime);
+        criteria.andCreateTimeLessThanOrEqualTo(endTime);
+        List<Order> orderList = orderDao.selectByExample(query);
+        if (orderList!=null&&orderList.size()>0){
+            for (Order order : orderList) {
+                BigDecimal payment = order.getPayment();
+                if (payment!=null){
+                    date = dateFormat.format(order.getCreateTime());
+                    if (list.contains(date)){
+                        resultMap.put(date,resultMap.get(date)+payment.longValue());
+                    }else {
+                        list.add(date);
+                        resultMap.put(date,payment.longValue());
+                    }
+                }
+            }
+        }
+        List<Long> dataList = new ArrayList<>();
+        if (list.size()>0){
+            for (String s : list) {
+                dataList.add(resultMap.get(s));
+            }
+        }
+        result.setDateList((String[]) list.toArray());
+        result.setDataList((Long[])dataList.toArray());
+        return result;
+    }
+
+    /**
+     * 运营商后台查询各商家销售额
+     * @return
+     */
+    @Override
+    public BImageResult findTotalMoneyBySellerId() {
+        BImageResult result = new BImageResult();
+        List<String> sellerList = new ArrayList<>();
+        List<Long> moneyList = new ArrayList<>();
+        Map<String,Long> resultMap = new HashMap<>();
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andStatusEqualTo("2");
+        List<Order> orderList = orderDao.selectByExample(query);
+        if (orderList!=null&&orderList.size()>0){
+            for (Order order : orderList) {
+                String sellerId = order.getSellerId();
+                Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                String name = seller.getName();
+                if (sellerList.contains(name)){
+                    resultMap.put(name,resultMap.get(name)+order.getPayment().longValue());
+                }else {
+                    sellerList.add(name);
+                    resultMap.put(name,order.getPayment().longValue());
+                }
+            }
+        }
+        if (sellerList.size()>0){
+            for (String s : sellerList) {
+                moneyList.add(resultMap.get(s));
+            }
+        }
+        result.setSellerList((String[]) sellerList.toArray());
+        result.setMoneyList((Long[]) moneyList.toArray());
+        return result;
     }
 }

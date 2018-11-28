@@ -16,7 +16,23 @@ app.controller('orderController',function($scope,$controller,$location,orderServ
         });
     };
 
+    //运营商按照商家查询销售额
     $scope.findTotalMoneyBySellerId = function () {
+        orderService.findTotalMoneyBySellerId().success(
+            function (response) {
+                $scope.BImageResult = response;
+            }
+        )
+    };
 
+    //运营商按照时间段查询订单数
+    $scope.findOrderCountByTime = function (startTime,endTime) {
+        orderService.findOrderCountByTime(startTime,endTime).success(
+            function (response) {
+                $scope.ZImageResult = response;
+            }
+        )
     }
+
+
 });
