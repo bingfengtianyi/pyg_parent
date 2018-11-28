@@ -8,7 +8,6 @@ import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.entity.Result;
 import com.itheima.pyg.pojo.good.Brand;
 import com.itheima.pyg.pojo.good.BrandQuery;
-import com.itheima.pyg.service.brand.BrandService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class BrandServiceImpl   implements BrandService {
 
     @Resource

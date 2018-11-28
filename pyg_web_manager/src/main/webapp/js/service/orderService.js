@@ -4,4 +4,8 @@ app.service('orderService',function($http){
         return $http.get("../order/findOrderList.action?pageNum="+page+"&pageSize="+rows);
     }
 
+    this.findTotalMoneyBySellerId = function () {
+        return $http.get("../order/findTotalMoney.action?")
+    }
+
 });

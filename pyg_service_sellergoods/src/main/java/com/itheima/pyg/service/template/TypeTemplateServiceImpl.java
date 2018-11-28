@@ -169,4 +169,9 @@ public class TypeTemplateServiceImpl    implements TypeTemplateService {
         }
         return maps;
     }
+
+    @Override
+    public List<TypeTemplate> findAll() {
+        return typeTemplateDao.selectByExample(null);
+    }
 }

@@ -54,43 +54,45 @@ public class CreateXSL {
 
     /**
      * 运营商后台 商品列表导出为excel
+     *
      * @param response
      */
     @RequestMapping("exportexcelForGoods")
     public void exportexcelForGoods(HttpServletResponse response) {
         List<Goods> userList = goodsService.getGoodList();
         String[] columnNames = {
-                "商家ID","SPU名","默认SKU","状态","是否上架","品牌","副标题","一级类目","二级类目",
-                "三级类目","小图","商城价","分类模板ID","是否启用规格","是否删除"
+                "商家ID", "SPU名", "默认SKU", "状态", "是否上架", "品牌", "副标题", "一级类目", "二级类目",
+                "三级类目", "小图", "商城价", "分类模板ID", "是否启用规格", "是否删除"
         };
         String[] columns = {
-                "sellerId","goodsName","defaultItemId","auditStatus","isMarketable","brandId",
-                "caption","category1Id","category2Id","category3Id","smallPic","price","typeTemplateId",
-                "isEnableSpec","isDelete"
+                "sellerId", "goodsName", "defaultItemId", "auditStatus", "isMarketable", "brandId",
+                "caption", "category1Id", "category2Id", "category3Id", "smallPic", "price", "typeTemplateId",
+                "isEnableSpec", "isDelete"
         };
-        ExcelUtils.exportExcel(response,userList,columnNames,columns,"商品表","E:\\Goods.html");
+        ExcelUtils.exportExcel(response, userList, columnNames, columns, "商品表", "E:\\Goods.html");
     }
 
     /**
      * 运营商后台 订单数据导出为excel
+     *
      * @param response
      */
     @RequestMapping("exportexcelForOrders")
     public void exportexcelForOrders(HttpServletResponse response) {
         List<Order> userList = orderService.getOrderList();
         String[] columnNames = {
-                "订单id","实付金额","支付类型","邮费","状态","订单创建时间","订单更新时间","付款时间",
-                "发货时间","交易完成时间","交易关闭时间","物流名称","物流单号","用户id","买家留言",
-                "买家昵称","买家是否已经评价","收货人地区名称","收货人手机","收货人邮编","收货人",
-                "过期时间","发票类型","订单来源","商家ID","支付订单号"
+                "订单id", "实付金额", "支付类型", "邮费", "状态", "订单创建时间", "订单更新时间", "付款时间",
+                "发货时间", "交易完成时间", "交易关闭时间", "物流名称", "物流单号", "用户id", "买家留言",
+                "买家昵称", "买家是否已经评价", "收货人地区名称", "收货人手机", "收货人邮编", "收货人",
+                "过期时间", "发票类型", "订单来源", "商家ID", "支付订单号"
         };
         String[] columns = {
-                "orderId","payment","paymentType","postFee","status","createTime","updateTime",
-                "paymentTime","consignTime","endTime","closeTime","shippingName","shippingCode",
-                "userId","buyerMessage","buyerNick","buyerRate","receiverAreaName","receiverMobile",
-                "receiverZipCode","receiver","expire","invoiceType","sourceType","sellerId","outTradeNo"
+                "orderId", "payment", "paymentType", "postFee", "status", "createTime", "updateTime",
+                "paymentTime", "consignTime", "endTime", "closeTime", "shippingName", "shippingCode",
+                "userId", "buyerMessage", "buyerNick", "buyerRate", "receiverAreaName", "receiverMobile",
+                "receiverZipCode", "receiver", "expire", "invoiceType", "sourceType", "sellerId", "outTradeNo"
         };
-        ExcelUtils.exportExcel(response,userList,columnNames,columns,"订单表","E:\\Orders.html");
+        ExcelUtils.exportExcel(response, userList, columnNames, columns, "订单表", "E:\\Orders.html");
     }
 
     @RequestMapping("exportexcel")
@@ -159,10 +161,13 @@ public class CreateXSL {
             //用工具类
             String[][] data = ExcelUtils.readexcell("E:\\brand.xls", 1);
             for (int i = 0; i < data.length; i++) {
-                Brand brand = new Brand();
-                brand.setName(data[i][0]);
-                brand.setFirstChar(data[i][1]);
-                brandService.addBrand(brand);//这是一个添加方法，dao层写入sql语句即可
+                if (data[i][0]!=""&&data[i][0]!=null){
+                    Brand brand = new Brand();
+                    brand.setId(Long.valueOf(data[i][0]));
+                    brand.setName(data[i][1]);
+                    brand.setFirstChar(data[i][2]);
+                    brandService.addBrand(brand);//这是一个添加方法，dao层写入sql语句即可
+                }
             }
             map.put("success", true);
 
@@ -182,10 +187,13 @@ public class CreateXSL {
             //用工具类
             String[][] data = ExcelUtils.readexcell("E:\\spec.xls", 1);
             for (int i = 0; i < data.length; i++) {
-                Specification specification = new Specification();
-                specification.setSpecName(data[i][0]);
-                specificationService.save(specification);
-                //这是一个添加方法，dao层写入sql语句即可
+                if (data[i][0]!=""&&data[i][0]!=null){
+                    Specification specification = new Specification();
+                    specification.setId(Long.valueOf(data[i][0]));
+                    specification.setSpecName(data[i][1]);
+                    specificationService.save(specification);
+                    //这是一个添加方法，dao层写入sql语句即可
+                }
             }
             map.put("success", true);
 
@@ -205,13 +213,16 @@ public class CreateXSL {
             //用工具类
             String[][] data = ExcelUtils.readexcell("E:\\template.xls", 1);
             for (int i = 0; i < data.length; i++) {
-                TypeTemplate typeTemplate = new TypeTemplate();
-                typeTemplate.setName(data[i][0]);
-                typeTemplate.setSpecIds(data[i][1]);
-                typeTemplate.setBrandIds(data[i][2]);
-                typeTemplate.setCustomAttributeItems(data[i][3]);
-                typeTemplateService.add(typeTemplate);
-                //这是一个添加方法，dao层写入sql语句即可
+                if (data[i][0]!=""&&data[i][0]!=null){
+                    TypeTemplate typeTemplate = new TypeTemplate();
+                    typeTemplate.setId(Long.valueOf(data[i][0]));
+                    typeTemplate.setName(data[i][1]);
+                    typeTemplate.setSpecIds(data[i][2]);
+                    typeTemplate.setBrandIds(data[i][3]);
+                    typeTemplate.setCustomAttributeItems(data[i][4]);
+                    typeTemplateService.add(typeTemplate);
+                    //这是一个添加方法，dao层写入sql语句即可
+                }
             }
             map.put("success", true);
 
@@ -247,6 +258,42 @@ public class CreateXSL {
         }
 
         return map;
+    }
+
+    @RequestMapping("exportexcelForBrand")
+    public void exportexcelForBrand(HttpServletResponse response) {
+        List<Brand> brandList = brandService.findAllBrands();
+        String[] columnNames = {
+                "品牌ID", "品牌名称", "品牌首字母"
+        };
+        String[] columns = {
+                "id", "name", "firstChar"
+        };
+        ExcelUtils.exportExcel(response, brandList, columnNames, columns, "品牌表", "brand");
+    }
+
+    @RequestMapping("exportexcelForSpec")
+    public void exportexcelForSpec(HttpServletResponse response) {
+        List<Specification> specificationList = specificationService.findAll();
+        String[] columnNames = {
+                "规格ID", "规格名称"
+        };
+        String[] columns = {
+                "id","specName"
+        };
+        ExcelUtils.exportExcel(response, specificationList, columnNames, columns, "规格表", "spec");
+    }
+
+    @RequestMapping("exportexcelForTemplate")
+    public void exportexcelForTemplate(HttpServletResponse response) {
+        List<TypeTemplate> typeTemplateList = typeTemplateService.findAll();
+        String[] columnNames = {
+                "模板ID", "模板名称","关联规格","关联品牌","自定义属性"
+        };
+        String[] columns = {
+                "id","name","specIds","brandIds","customAttributeItems"
+        };
+        ExcelUtils.exportExcel(response, typeTemplateList, columnNames, columns, "模板表", "template");
     }
 
 }

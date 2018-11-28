@@ -1,6 +1,7 @@
 package com.itheima.pyg.controller.itemcat;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.pojo.item.ItemCat;
 import com.itheima.pyg.service.itemcat.ItemCatService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ import java.util.List;
 @RequestMapping("itemCat")
 public class ItemCatController {
 
-    @Reference
+    @Reference(timeout = 60000)
     private ItemCatService itemCatService;
 
     /**
@@ -32,5 +33,10 @@ public class ItemCatController {
     @RequestMapping("findAll")
     public List<ItemCat>    findAll(){
         return itemCatService.findAll();
+    }
+
+    @RequestMapping("findPage")
+    public PageResult<ItemCat>  findPage(Integer pageNum,Integer pageSize){
+        return itemCatService.findPage(pageNum,pageSize);
     }
 }

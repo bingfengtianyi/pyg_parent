@@ -1,5 +1,5 @@
  //控制层 
-app.controller('goodsController' ,function($scope,$controller,itemCatService,goodsService){
+app.controller('goodsController1' ,function($scope,$controller,itemCatService,goodsService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -10,7 +10,12 @@ app.controller('goodsController' ,function($scope,$controller,itemCatService,goo
 				$scope.list=response;
 			}			
 		);
-	}    
+	}
+
+    $scope.reloadList = function(){
+        // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+        $scope.findPageAll($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+    }
 	
 	//分页
 	$scope.findPage=function(page,rows){			

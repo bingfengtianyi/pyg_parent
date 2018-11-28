@@ -178,6 +178,6 @@ public class SpecificationServiceImpl   implements SpecificationService {
 
     @Override
     public void save(Specification specification) {
-
+        specificationDao.insertSelective(specification);
     }
 }

@@ -15,4 +15,8 @@ app.controller('orderController',function($scope,$controller,$location,orderServ
             $scope.list = response.rows;
         });
     };
+
+    $scope.findTotalMoneyBySellerId = function () {
+
+    }
 });
