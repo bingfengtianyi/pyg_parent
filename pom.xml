@@ -108,6 +108,7 @@
                 <artifactId>zkclient</artifactId>
                 <version>${zkclient.version}</version>
             </dependency>
+            <!--JUNIT-->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
