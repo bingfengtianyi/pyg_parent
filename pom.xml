@@ -113,6 +113,7 @@
                 <artifactId>junit</artifactId>
                 <version>4.9</version>
             </dependency>
+            <!--JSON-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
