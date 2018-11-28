@@ -124,6 +124,14 @@
       <if test="typeId != null" >
         type_id,
       </if>
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -138,6 +146,17 @@
       <if test="typeId != null" >
         #{typeId,jdbcType=BIGINT},
       </if>
+
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
+
+
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.itheima.pyg.pojo.item.ItemCatQuery" resultType="java.lang.Integer" >

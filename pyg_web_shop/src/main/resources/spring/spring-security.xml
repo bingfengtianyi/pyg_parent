@@ -54,7 +54,8 @@
         </authentication-provider>
     </authentication-manager>
 
-    <authentication-manager>
+   <!-- revise start: 删除固定用户名密码认证登陆 gengweiwei
+   <authentication-manager>
         <authentication-provider>
             <user-service>
                 <user name="admin" password="123456" authorities="ROLE_SELLER"/>
@@ -62,12 +63,13 @@
             </user-service>
         </authentication-provider>
     </authentication-manager>
+    revise end: 删除固定用户名密码认证登陆 gengweiwei-->
 
 
 
     <!-- 引用dubbo 服务 -->
     <dubbo:application name="pinyougou-web-shop" />
-    <dubbo:registry address="zookeeper://192.168.23.130:2181"/>
+    <dubbo:registry address="zookeeper://192.168.200.128:2181"/>
     <dubbo:reference id="sellerService"  interface="com.itheima.pyg.service.seller.SellerService" >
     </dubbo:reference>
 

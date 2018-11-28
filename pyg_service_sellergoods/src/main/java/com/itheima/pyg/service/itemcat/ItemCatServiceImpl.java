@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -24,8 +25,26 @@ public class ItemCatServiceImpl implements ItemCatService {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+
+
     @Override
     public void save(ItemCat itemCat) {
+
+        /**
+         * revise start: 添加方法补充完成  gengweiwei
+         */
+        itemCatDao.insertSelective(itemCat);
+        // 1 商家将新建品牌存入redis且设置以"ItemCat_status=0"为键表明为待审核状态,值为插入对象itemCat
+        redisTemplate.boundSetOps("ItemCat_status=0").add(itemCat);
+        //2 运营商可以通过下面.members方法取出存入在redis中的Set集合,遍历即可取出所有对象itemCat,
+        // 后续建议将"ItemCat_status=0"更改为"ItemCat_status=1"
+        Set members = redisTemplate.boundSetOps("ItemCat_status=0").members();
+        for (Object member : members) {
+            System.out.println("每一个itemCat对象明细如下"+member);
+        }
+        /**
+         * revise end: 添加方法补充完成  gengweiwei
+         */
 
     }
 
@@ -43,10 +62,22 @@ public class ItemCatServiceImpl implements ItemCatService {
                 redisTemplate.boundHashOps("itemCat").put(itemCat.getName(), itemCat.getTypeId());
             }
         }
+            /**
+             * revise start: 1 查询输入框输入条件封装到criteria对象中  gengweiwei
+             */
         ItemCatQuery itemCatQuery = new ItemCatQuery();
         itemCatQuery.createCriteria().andParentIdEqualTo(parentId);
-        return itemCatDao.selectByExample(itemCatQuery);
-    }
+        for (ItemCat itemCat : itemCats) {
+            if (itemCat.getName()!=null&&!"".equalsIgnoreCase(itemCat.getName().trim())) {
+                itemCatQuery.createCriteria().andNameLike("%"+itemCat.getName().trim()+"%");
+            }
+        }
+            /**
+             * revise start: 1 查询输入框输入条件封装到criteria对象中  gengweiwei
+             */
+
+            return itemCatDao.selectByExample(itemCatQuery);
+        }
 
     /**
      * 查询商品分类实体
@@ -85,4 +116,26 @@ public class ItemCatServiceImpl implements ItemCatService {
         PageResult<ItemCat> pageResult = new PageResult<>(page.getTotal(), page.getResult());
         return pageResult;
     }
+
+    /**
+     * revise start: 增加带条件的分页查询接口实现类  gengweiwei
+     */
+    @Override
+    public PageResult search(Integer pageNum, Integer pageSize, ItemCat itemCat) {
+        PageHelper.startPage(pageNum,pageSize);
+        ItemCatQuery itemCatQuery = new ItemCatQuery();
+        if (itemCat.getName()!=null&&!"".equalsIgnoreCase(itemCat.getName().trim())) {
+            itemCatQuery.createCriteria().andNameLike("%"+itemCat.getName()+"%");
+        }
+        if(itemCat.getSellerId()!=null&&!"".equalsIgnoreCase(itemCat.getSellerId().trim())){
+            itemCatQuery.createCriteria().andSellerIdEqualTo(itemCat.getSellerId().trim());
+        }
+        Page<ItemCat> Page=(Page<ItemCat>) itemCatDao.selectByExample(itemCatQuery);
+        return new PageResult(Page.getTotal(),Page.getResult());
+    }
+
+    /**
+     * revise start: 增加带条件的分页查询接口实现类  gengweiwei
+     */
+
 }
