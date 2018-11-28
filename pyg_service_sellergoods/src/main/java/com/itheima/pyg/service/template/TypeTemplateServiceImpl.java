@@ -61,6 +61,19 @@ public class TypeTemplateServiceImpl    implements TypeTemplateService {
         if (name!=null&&!"".equalsIgnoreCase(name.trim())){
            typeTemplateQuery.createCriteria().andNameLike("%"+name.trim()+"%");
         }
+
+        /**
+         * revise start: 1 判断sellerId且封装到criteria对象中,详见对应TypeTemplateQuery类增加条件  gengweiwei
+         */
+        if (typeTemplate.getSellerId()!=null&&!"".equals(typeTemplate.getSellerId().trim())) {
+
+            typeTemplateQuery.createCriteria().andSellerIdEqualTo(typeTemplate.getSellerId().trim());
+        }
+        /**
+         * revise end: 1 判断sellerId且封装到criteria对象中,详见对应BrandQuery类增加条件  gengweiwei
+         */
+
+
         typeTemplateQuery.setOrderByClause("id desc");
         Page<TypeTemplate> page = (Page<TypeTemplate>) typeTemplateDao.selectByExample(typeTemplateQuery);
         return new PageResult(page.getTotal(),page.getResult());
@@ -76,6 +89,25 @@ public class TypeTemplateServiceImpl    implements TypeTemplateService {
         Result result = null;
         try {
             typeTemplateDao.insertSelective(typeTemplate);
+
+
+            /**
+             * revise start: 存入Set类型  gengweiwei
+             */
+            // 1 商家将新建品牌存入redis且设置以"typeTemplate_status=0"为键表明为待审核状态,值为插入对象typeTemplate
+            redisTemplate.boundSetOps("TypeTemplate_status=0").add(typeTemplate);
+            //2 运营商可以通过下面.members方法取出存入在redis中的Set集合,遍历即可取出所有对象typeTemplate,
+            // 后续建议将"typeTemplate_status=0"更改为"typeTemplate_status=1"
+            Set members = redisTemplate.boundSetOps("TypeTemplate_status=0").members();
+            for (Object member : members) {
+                System.out.println("每一个typeTemplate对象明细如下"+member);
+            }
+            /**
+             * revise end: 存入Set类型  gengweiwei
+             */
+
+
+
             result = new Result(true,"添加成功");
         } catch (Exception e) {
             e.printStackTrace();
