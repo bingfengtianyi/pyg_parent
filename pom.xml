@@ -164,6 +164,7 @@
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
             </dependency>
+            <!--文件上传-->
             <dependency>
                 <groupId>org.csource.fastdfs</groupId>
                 <artifactId>fastdfs</artifactId>
