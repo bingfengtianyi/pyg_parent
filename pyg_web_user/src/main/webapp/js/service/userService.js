@@ -9,4 +9,9 @@ app.service('userService',function($http){
         return $http.get( 'user/sendCode.action?phone='+phone);
     }
 
+    //我的收藏
+    this.showMyCollection=function () {
+        return $http.get("user/showMyCollection.action");
+    }
+
 });

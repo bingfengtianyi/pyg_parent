@@ -1,5 +1,9 @@
 //控制层
-app.controller('userController',function($scope,userService){
+app.controller('userController',function($scope,$controller,userService,orderService){
+
+    // AngularJS中的继承:伪继承
+    $controller('indexController',{$scope:$scope});
+
     //注册
     $scope.reg=function(){
         if($scope.entity.password!=$scope.password) {
@@ -26,5 +30,37 @@ app.controller('userController',function($scope,userService){
             }
         );
     }
+
+
+
+    $scope.orderList=[];
+    //查找未付款订单
+    $scope.findOrderListUnPay=function() {
+        orderService.findOrderListUnPay().success(
+            function (response) {
+                $scope.orderList=response;
+            }
+        )
+    }
+
+
+
+    $scope.orderItemList=[];
+    //我的收藏
+    $scope.showMyCollection=function () {
+        userService.showMyCollection().success(
+            function (response) {
+
+                //$scope.orderItemList=response;
+                if(response!=null) {
+                    $scope.orderItemList=response;
+                }else {
+                    //如果该用户没有收藏商品
+                    location.href="home-person-collectNone.html";
+                }
+            }
+        )
+    }
+
 
 });

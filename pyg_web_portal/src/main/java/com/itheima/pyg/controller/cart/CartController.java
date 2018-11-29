@@ -2,7 +2,9 @@ package com.itheima.pyg.controller.cart;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.pyg.entity.LoginResult;
+import com.itheima.pyg.entity.Result;
 import com.itheima.pyg.entity.vo.Cart;
+import com.itheima.pyg.pojo.order.OrderItem;
 import com.itheima.pyg.service.cart.CartService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("cart")
+@RequestMapping("/cart")
 public class CartController {
     @Reference(timeout = 6000)
     private CartService cartService;
@@ -24,7 +26,7 @@ public class CartController {
      * @param num
      * @return
      */
-    @RequestMapping("addGoodsToCartList")
+    @RequestMapping("/addGoodsToCartList")
     public LoginResult addGoodsToCartList(@RequestBody List<Cart> cartList,Long itemId, Integer num){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("当前登录用户名:"+name);
@@ -51,7 +53,7 @@ public class CartController {
      * 查找购物车,主要作用是判断用户是否登录
      * @return
      */
-    @RequestMapping("findCartList")
+    @RequestMapping("/findCartList")
     public LoginResult findCartList(@RequestBody List<Cart>  cartList){
         //从springSecurity中获取用户名
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -68,4 +70,29 @@ public class CartController {
             return new LoginResult(true,username,cartListFromRedis);
         }
     }
+
+
+
+    /**
+     * 商品移动到我的收藏
+     * @param orderItem
+     * @return
+     */
+    @RequestMapping("removeGoodToSC")
+    public Result removeGoodToSC(@RequestBody OrderItem orderItem){
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!"anonymousUser".equals(userId)){
+            try {
+                cartService.removeGoodToSC(orderItem,userId);
+                return new Result(true,"收藏成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new Result(false,"收藏失败");
+            }
+        }
+
+        //用户没登录
+        return new Result(false,"请登录");
+    }
+
 }

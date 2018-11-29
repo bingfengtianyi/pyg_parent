@@ -1,6 +1,7 @@
 package com.itheima.pyg.service.cart;
 
 import com.itheima.pyg.entity.vo.Cart;
+import com.itheima.pyg.pojo.order.OrderItem;
 
 import java.util.List;
 
@@ -36,4 +37,10 @@ public interface CartService {
      * @return
      */
     List<Cart>  mergeCartList(List<Cart> cartList1,List<Cart> cartList2);
+
+    /**
+     * 商品收藏
+     * @param orderItem
+     */
+    void removeGoodToSC(OrderItem orderItem, String userId);
 }

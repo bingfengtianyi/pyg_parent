@@ -7,6 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ItemCatDao {
+    /**
+     * 通过主键查找itemCat集合 11.28
+     * @param传入parentId
+     * @return返回itemCat集合
+     */
+    List<ItemCat> findItemCatListByParentId(@Param("parentId") Long parentId);
+
     int countByExample(ItemCatQuery example);
 
     int deleteByExample(ItemCatQuery example);

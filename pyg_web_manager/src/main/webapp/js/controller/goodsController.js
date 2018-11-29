@@ -102,10 +102,10 @@ app.controller('goodsController' ,function($scope,$controller,itemCatService,goo
 			}
 		});
 	}
-    $scope.reloadList = function(){
-        // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-        $scope.findPageAll($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-    }
+    // $scope.reloadList = function(){
+    //     // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+    //     //$scope.findPageAll($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+    // }
     // 分页查询
     $scope.findPageAll = function(page,rows){
         // 向后台发送请求获取数据:

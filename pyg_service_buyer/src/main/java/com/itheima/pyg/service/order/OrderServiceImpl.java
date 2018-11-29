@@ -7,13 +7,19 @@ import com.itheima.pyg.dao.item.ItemDao;
 import com.itheima.pyg.dao.log.PayLogDao;
 import com.itheima.pyg.dao.order.OrderDao;
 import com.itheima.pyg.dao.order.OrderItemDao;
+import com.itheima.pyg.dao.seller.SellerDao;
+import com.itheima.pyg.entity.BImageResult;
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.entity.ZImageResult;
 import com.itheima.pyg.entity.vo.Cart;
+import com.itheima.pyg.entity.vo.OrderVo;
 import com.itheima.pyg.pojo.item.Item;
 import com.itheima.pyg.pojo.log.PayLog;
 import com.itheima.pyg.pojo.order.Order;
 import com.itheima.pyg.pojo.order.OrderItem;
+import com.itheima.pyg.pojo.order.OrderItemQuery;
 import com.itheima.pyg.pojo.order.OrderQuery;
+import com.itheima.pyg.pojo.seller.Seller;
 import com.itheima.pyg.pojo.user.User;
 import com.itheima.pyg.util.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +27,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional
@@ -46,6 +52,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ItemDao itemDao;
 
+    @Autowired
+    private SellerDao sellerDao;
+
     /**
      * 分页获得订单列表
      * @return
@@ -61,9 +70,19 @@ public class OrderServiceImpl implements OrderService {
         return pageResult;
     }
 
-
-
-
+    @Override
+    public PageResult<Order> getOrderListByPageAndSeller(Integer pageNum, Integer pageSize,String seller) {
+        //设置分页查询条件
+        PageHelper.startPage(pageNum,pageSize);
+        //进行查询
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andSellerIdEqualTo(seller);
+        Page<Order> page = (Page<Order>) orderDao.selectByExample(query);
+        //封装PageResult对象
+        PageResult<Order>   pageResult = new PageResult<>(page.getTotal(),page.getResult());
+        return pageResult;
+    }
 
     /**
      * 保存订单信息及订单明细到数据库
@@ -190,15 +209,117 @@ public class OrderServiceImpl implements OrderService {
         redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
     }
 
+
+
     /**
-     * //查出未付款订单
+     * 查出该用户未付款订单
      * @param userId
      * @return
      */
     @Override
-    public List<Order> findOrderListByUserIdUnPay(String userId) {
-        return null;
+    public List<OrderVo> findOrderListByUserIdUnPay(String userId) {
+        List<OrderVo> orderVoList =new ArrayList<>();
+
+        OrderQuery query=new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andStatusEqualTo("1");
+        query.setOrderByClause("create_time desc");
+        List<Order> orders = orderDao.selectByExample(query);
+
+
+        if(orders!=null && orders.size()>0){
+
+            for (Order order : orders) {
+                OrderVo orderVo=new OrderVo();
+
+                Date createTime = order.getCreateTime();
+                SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String newTime = format.format(createTime);
+                orderVo.setCreateTime(newTime);
+                orderVo.setOrderId(order.getOrderId().toString());
+
+                String sellerId = order.getSellerId();
+                if (sellerId==null){
+                    sellerId="pyg";
+                }
+
+                Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                orderVo.setNickName(seller.getNickName());
+
+                //添加订单对应商品
+                OrderItemQuery orderItemQuery=new OrderItemQuery();
+                OrderItemQuery.Criteria criteria1 = orderItemQuery.createCriteria();
+                criteria1.andOrderIdEqualTo(order.getOrderId());
+                List<OrderItem> orderItems = orderItemDao.selectByExample(orderItemQuery);
+
+                //将订单对应的商品价格和订单号存入redis
+                if(orderItems!=null && orderItems.size()>0){
+                    long totalFee=0L;
+                    for (OrderItem orderItem : orderItems) {
+                        totalFee+=orderItem.getTotalFee().doubleValue()*100;
+                    }
+                    redisTemplate.boundHashOps("unPayOrderList").put(order.getOrderId()+"",totalFee);
+                }
+                orderVo.setOrderItemList(orderItems);
+                orderVoList.add(orderVo);
+            }
+
+        }
+
+        return orderVoList;
     }
+
+
+    /**
+     * 根据订单号查找到订单金额
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public Long findTotalFeeFromRedis(String out_trade_no) {
+        return (Long) redisTemplate.boundHashOps("unPayOrderList").get(out_trade_no);
+    }
+
+
+
+
+    /**
+     * 支付成功
+     * 修改未支付订单状态
+     * @param out_trade_no 订单号
+     * @param transaction_id
+     */
+    @Override
+    public void updateUnPayOrderStatus(String out_trade_no, String transaction_id) {
+
+        //修改订单状态
+        Order order1 = orderDao.selectByPrimaryKey(Long.valueOf(out_trade_no));
+        order1.setStatus("2");
+        order1.setPaymentTime(new Date());
+        orderDao.updateByPrimaryKeySelective(order1);
+
+        //存支付日志
+        PayLog payLog = new PayLog();
+        payLog.setCreateTime(new Date());
+        payLog.setOutTradeNo(out_trade_no);
+        payLog.setPayType(order1.getPaymentType());
+        payLog.setTotalFee((Long) redisTemplate.boundHashOps("unPayOrderList").get(out_trade_no));
+        payLog.setUserId(order1.getUserId());
+        payLog.setTradeState("1");
+        payLog.setPayTime(new Date());
+        payLog.setTransactionId(transaction_id);
+        payLogDao.insertSelective(payLog);
+
+        //删除redis中该订单的数据
+        redisTemplate.boundHashOps("unPayOrderList").delete(out_trade_no);
+    }
+
+
+
+
+
+
 
     /**
      * 运营商后台,查询订单数据,用于导出excel
@@ -207,5 +328,93 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrderList() {
         return orderDao.selectByExample(null);
+    }
+
+    /**
+     * 运营商后台根据时间查询订单量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public ZImageResult findOrderCountByTime(Date startTime, Date endTime) {
+        ZImageResult result = new ZImageResult();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+        Map<String,Long> resultMap = new HashMap<>();
+        List<String> list = new ArrayList<>();
+        String date = null;
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andCreateTimeGreaterThanOrEqualTo(startTime);
+        criteria.andCreateTimeLessThanOrEqualTo(endTime);
+        List<Order> orderList = orderDao.selectByExample(query);
+        if (orderList!=null&&orderList.size()>0){
+            for (Order order : orderList) {
+                BigDecimal payment = order.getPayment();
+                if (payment!=null){
+                    date = dateFormat.format(order.getCreateTime());
+                    if (list.contains(date)){
+                        resultMap.put(date,resultMap.get(date)+payment.longValue());
+                    }else {
+                        list.add(date);
+                        resultMap.put(date,payment.longValue());
+                    }
+                }
+            }
+        }
+        List<Long> dataList = new ArrayList<>();
+        if (list.size()>0){
+            for (String s : list) {
+                dataList.add(resultMap.get(s));
+            }
+        }
+
+        String[] strs = new String[list.size()];
+        Long[] longs = new Long[dataList.size()];
+
+        result.setDateList(list.toArray(strs));
+        result.setDataList(dataList.toArray(longs));
+        return result;
+    }
+
+    /**
+     * 运营商后台查询各商家销售额
+     * @return
+     */
+    @Override
+    public BImageResult findTotalMoneyBySellerId() {
+        BImageResult result = new BImageResult();
+        List<String> sellerList = new ArrayList<>();
+        List<Long> moneyList = new ArrayList<>();
+        Map<String,Long> resultMap = new HashMap<>();
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andStatusEqualTo("2");
+        List<Order> orderList = orderDao.selectByExample(query);
+        if (orderList!=null&&orderList.size()>0){
+            for (Order order : orderList) {
+                String sellerId = order.getSellerId();
+                if (sellerId!=null){
+                    Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                    String name = seller.getName();
+                    if (sellerList.contains(name)){
+                        resultMap.put(name,resultMap.get(name)+order.getPayment().longValue());
+                    }else {
+                        sellerList.add(name);
+                        resultMap.put(name,order.getPayment().longValue());
+                    }
+                }
+            }
+        }
+        if (sellerList.size()>0){
+            for (String s : sellerList) {
+                moneyList.add(resultMap.get(s));
+            }
+        }
+        String[] strs = new String[sellerList.size()];
+        Long[] longs = new Long[sellerList.size()];
+        result.setSellerList(sellerList.toArray(strs));
+        result.setMoneyList(moneyList.toArray(longs));
+        return result;
     }
 }

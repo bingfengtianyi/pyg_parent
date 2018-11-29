@@ -117,7 +117,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping("delete")
-    public Result delete(final long[] ids){
+    public Result delete(final Long[] ids){
         try {
             goodsService.delete(ids);
             /*删除商品,删除索引库*/

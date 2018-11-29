@@ -28,6 +28,7 @@ public class ItemDeleteLinstener implements MessageListener {
             String json = textMessage.getText();
             // 将json转换为itemList对象
             List<String> itemIds = JSON.parseArray(json, String.class);
+            System.out.println("监听接收itemIds"+itemIds);
             solrTemplate.deleteById(itemIds);
             solrTemplate.commit();
 

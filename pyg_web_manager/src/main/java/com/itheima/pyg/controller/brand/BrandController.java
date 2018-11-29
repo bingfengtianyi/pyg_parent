@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("brand")
+@RequestMapping("/brand")
 public class BrandController {
 
     @Reference
@@ -23,7 +23,7 @@ public class BrandController {
      * 查询全部品牌
      * @return
      */
-    @RequestMapping("findAllBrands")
+    @RequestMapping("/findAllBrands")
     public List<Brand>  findAllBrands(){
         return brandService.findAllBrands();
     }

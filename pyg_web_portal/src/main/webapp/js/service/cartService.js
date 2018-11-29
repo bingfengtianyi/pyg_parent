@@ -45,5 +45,11 @@ app.service('cartService',function($http){
 	this.findCartList = function (cartList) {
 		return $http.post("cart/findCartList.action",cartList);
     }
+
+
+    //移动到我的关注
+    this.removeGoodToSC=function (item) {
+        return $http.post("cart/removeGoodToSC.action",item);
+    }
 	
 });

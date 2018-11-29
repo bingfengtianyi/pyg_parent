@@ -82,7 +82,7 @@ app.controller('itemCatController' ,function($scope,$controller   ,itemCatServic
 		itemCatService.findByParentId(parentId).success(function(response){
 			$scope.list=response;
 		});
-	}
+	};
 	
 	// 定义一个变量记录当前是第几级分类
 	$scope.grade = 1;

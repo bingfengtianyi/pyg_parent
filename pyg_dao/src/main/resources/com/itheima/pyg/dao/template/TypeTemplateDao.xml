@@ -128,6 +128,15 @@
       <if test="customAttributeItems != null" >
         custom_attribute_items,
       </if>
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -145,6 +154,16 @@
       <if test="customAttributeItems != null" >
         #{customAttributeItems,jdbcType=VARCHAR},
       </if>
+
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
+
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.itheima.pyg.pojo.template.TypeTemplateQuery" resultType="java.lang.Integer" >
