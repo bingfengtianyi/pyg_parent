@@ -1,5 +1,5 @@
 //控制层
-app.controller('orderController',function($scope,$controller,$location,orderService){
+app.controller('orderController1',function($scope,$controller,$location,orderService){
     // AngularJS中的继承:伪继承
     $controller('baseController',{$scope:$scope});
 

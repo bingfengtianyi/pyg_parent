@@ -20,7 +20,7 @@
 
     <script type="text/javascript" src="../js/base_pagination.js"></script>
     <script type="text/javascript" src="../js/controller/baseController.js"></script>
-    <script type="text/javascript" src="../js/controller/orderController.js"></script>
+    <script type="text/javascript" src="../js/controller/orderController1.js"></script>
     <script type="text/javascript" src="../js/service/orderService.js"></script>
     <!--引入图表相关js和css-->
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
@@ -80,7 +80,7 @@
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input  type="checkbox" ng-click="updateSelection($event,entity.orderId)"></td>
-                <td>{{$index+1}}</td>
+                <td>{{(paginationConf.currentPage-1)*(paginationConf.itemsPerPage)+$index+1}}</td>
                 <td>{{entity.orderId}}</td>
                 <td>{{entity.payment}}</td>
                 <td>{{entity.paymentType}}</td>

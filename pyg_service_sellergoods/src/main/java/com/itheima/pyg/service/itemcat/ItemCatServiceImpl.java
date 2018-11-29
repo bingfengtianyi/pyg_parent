@@ -7,7 +7,6 @@ import com.itheima.pyg.dao.item.ItemCatDao;
 import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.pojo.item.ItemCat;
 import com.itheima.pyg.pojo.item.ItemCatQuery;
-import com.itheima.pyg.service.itemcat.ItemCatService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 

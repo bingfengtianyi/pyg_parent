@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../js/service/itemCatService.js"></script>
     <script type="text/javascript" src="../js/service/goodsService.js"></script>
 </head>
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController">
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController1">
 <!-- .box-body -->
 <div class="box-header with-border">
     <h3 class="box-title">商品信息</h3>
@@ -63,7 +63,7 @@
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input  type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
-                <td>{{$index+1}}</td>
+                <td>{{(paginationConf.currentPage-1)*(paginationConf.itemsPerPage)+$index+1}}</td>
                 <td>{{entity.sellerId}}</td>
                 <td>{{entity.goodsName}}</td>
                 <td>{{entity.auditStatus}}</td>

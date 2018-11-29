@@ -66,12 +66,12 @@
             <tbody>
             <tr ng-repeat="entity in list">
                 <td><input  type="checkbox" ng-click="updateSelection($event,entity.id)"></td>
-                <td>{{$index+1}}</td>
+                <td>{{(paginationConf.currentPage-1)*(paginationConf.itemsPerPage)+$index+1}}</td>
                 <td>{{entity.username}}</td>
                 <td>{{entity.name}}</td>
                 <td>{{entity.phone}}</td>
                 <td>{{entity.created}}</td>
-                <td>{{entity.status}}</td>
+                <td>{{entity.status=='Y'?'正常':'不正常'}}</td>
             </tr>
 
             </tbody>
