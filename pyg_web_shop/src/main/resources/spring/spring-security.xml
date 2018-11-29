@@ -69,7 +69,7 @@
 
     <!-- 引用dubbo 服务 -->
     <dubbo:application name="pinyougou-web-shop" />
-    <dubbo:registry address="zookeeper://192.168.200.128:2181"/>
+    <dubbo:registry address="zookeeper://192.168.23.130:2181"/>
     <dubbo:reference id="sellerService"  interface="com.itheima.pyg.service.seller.SellerService" >
     </dubbo:reference>
 

@@ -35,4 +35,6 @@ public interface OrderService {
     ZImageResult findOrderCountByTime(Date startTime, Date endTime);
 
     BImageResult findTotalMoneyBySellerId();
+
+    PageResult<Order> getOrderListByPageAndSeller(Integer pageNum, Integer pageSize,String seller);
 }

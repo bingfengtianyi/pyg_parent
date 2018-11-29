@@ -68,9 +68,19 @@ public class OrderServiceImpl implements OrderService {
         return pageResult;
     }
 
-
-
-
+    @Override
+    public PageResult<Order> getOrderListByPageAndSeller(Integer pageNum, Integer pageSize,String seller) {
+        //设置分页查询条件
+        PageHelper.startPage(pageNum,pageSize);
+        //进行查询
+        OrderQuery query = new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andSellerIdEqualTo(seller);
+        Page<Order> page = (Page<Order>) orderDao.selectByExample(query);
+        //封装PageResult对象
+        PageResult<Order>   pageResult = new PageResult<>(page.getTotal(),page.getResult());
+        return pageResult;
+    }
 
     /**
      * 保存订单信息及订单明细到数据库
@@ -254,8 +264,12 @@ public class OrderServiceImpl implements OrderService {
                 dataList.add(resultMap.get(s));
             }
         }
-        result.setDateList((String[]) list.toArray());
-        result.setDataList((Long[])dataList.toArray());
+
+        String[] strs = new String[list.size()];
+        Long[] longs = new Long[dataList.size()];
+
+        result.setDateList(list.toArray(strs));
+        result.setDataList(dataList.toArray(longs));
         return result;
     }
 
@@ -276,13 +290,15 @@ public class OrderServiceImpl implements OrderService {
         if (orderList!=null&&orderList.size()>0){
             for (Order order : orderList) {
                 String sellerId = order.getSellerId();
-                Seller seller = sellerDao.selectByPrimaryKey(sellerId);
-                String name = seller.getName();
-                if (sellerList.contains(name)){
-                    resultMap.put(name,resultMap.get(name)+order.getPayment().longValue());
-                }else {
-                    sellerList.add(name);
-                    resultMap.put(name,order.getPayment().longValue());
+                if (sellerId!=null){
+                    Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                    String name = seller.getName();
+                    if (sellerList.contains(name)){
+                        resultMap.put(name,resultMap.get(name)+order.getPayment().longValue());
+                    }else {
+                        sellerList.add(name);
+                        resultMap.put(name,order.getPayment().longValue());
+                    }
                 }
             }
         }
@@ -291,8 +307,10 @@ public class OrderServiceImpl implements OrderService {
                 moneyList.add(resultMap.get(s));
             }
         }
-        result.setSellerList((String[]) sellerList.toArray());
-        result.setMoneyList((Long[]) moneyList.toArray());
+        String[] strs = new String[sellerList.size()];
+        Long[] longs = new Long[sellerList.size()];
+        result.setSellerList(sellerList.toArray(strs));
+        result.setMoneyList(moneyList.toArray(longs));
         return result;
     }
 }

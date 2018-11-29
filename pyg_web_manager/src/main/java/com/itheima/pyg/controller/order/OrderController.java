@@ -10,6 +10,8 @@ import com.itheima.pyg.service.order.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
@@ -31,8 +33,16 @@ public class OrderController {
      * @return
      */
     @RequestMapping("findOrderCountByTime")
-    public ZImageResult findOrderCountByTime(Date startTime,Date endTime){
-        return orderService.findOrderCountByTime(startTime,endTime);
+    public ZImageResult findOrderCountByTime(String startTime,String endTime){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date start = dateFormat.parse(startTime);
+            Date end = dateFormat.parse(endTime);
+            return orderService.findOrderCountByTime(start,end);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
