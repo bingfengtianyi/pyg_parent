@@ -1,6 +1,7 @@
 package com.itheima.pyg.pojo.item;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ItemCat implements Serializable {
     /**
@@ -23,6 +24,23 @@ public class ItemCat implements Serializable {
      */
     private Long typeId;
 
+    /**
+     * 新添加的 11.28
+     * 添加下级属性分类集合作为属性
+     */
+    private List<ItemCat> itemCatList;
+
+    /**
+     * 新添加的itemcatlist方法
+     * @return
+     */
+    public List<ItemCat> getItemCatList() {
+        return itemCatList;
+    }
+
+    public void setItemCatList(List<ItemCat> itemCatList) {
+        this.itemCatList = itemCatList;
+    }
 
     private static final long serialVersionUID = 1L;
 

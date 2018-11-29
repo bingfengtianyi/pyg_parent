@@ -93,6 +93,10 @@
       ${fields}
     </if>
   </sql>
+  <!--添加寻找用户-->
+  <select id="selectUser" resultType="Long" >
+    select count(id) from tb_user
+  </select>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.itheima.pyg.pojo.user.UserQuery" >
     select
     <if test="distinct" >

@@ -3,6 +3,7 @@ app.controller('userController',function($scope,$controller,$location,userServic
     // AngularJS中的继承:伪继承
     $controller('baseController',{$scope:$scope});
 
+
     $scope.reloadList = function(){
         // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
         $scope.findPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);

@@ -7,6 +7,11 @@ import java.util.List;
 
 public interface ItemCatService {
     /**
+     * 查找itemCat集合
+     * @return
+     */
+    public List<ItemCat> findItemCatList();
+    /**
      * 向数据库添加分类,用于excel数据导入数据库
      * @param itemCat
      */
