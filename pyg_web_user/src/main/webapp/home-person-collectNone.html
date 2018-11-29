@@ -10,16 +10,9 @@
 
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
-
-
-	<script type="text/javascript" src="plugins/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="js/base.js"></script>
-	<script type="text/javascript" src="js/service/userService.js"></script>
-	<script type="text/javascript" src="js/service/orderService.js"></script>
-	<script type="text/javascript" src="js/controller/userController.js"></script>
 </head>
 
-<body ng-app="pinyougou" ng-controller="userController" ng-init="showMyCollection()">
+<body>
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -195,22 +188,12 @@ $(function(){
                     <div class="body">                   
                             <h4>收藏的商品</h4>
                             <div class="goods-list">
-                                <ul class="yui3-g"  id="goods-list"  >
-                                    <li class="yui3-u-1-4" ng-repeat="orderItem in orderItemList">
-                                        <div class="list-wrap">
-                                            <div class="p-img"><img src="{{orderItem.picPath}}" alt='' width="300px" height="300px"></div>
-                                            <div class="price"><strong><em>¥</em> <i>{{orderItem.price}}</i></strong></div>
-                                            <div class="attr"><em>{{orderItem.title}}</em></div>
-                                            <div class="cu"><em><span>促</span>满一件可参加超值换购</em></div>
-                                            <div class="operate">
-                                                <a href="success-cart.html" target="_blank" class="sui-btn btn-bordered btn-danger">加入购物车</a>
-                                                <a href="javascript:void(0);" class="sui-btn btn-bordered">对比</a>
-                                                <a href="javascript:void(0);" class="sui-btn btn-bordered">降价通知</a>
-                                            </div>
-                                        </div>
-                                    </li >
+                                <ul class="yui3-g"  id="goods-list">
+
+
+                                     <h1>你还没有收藏商品(⊙o⊙)…快去购物车收藏吧&nbsp;&nbsp;&nbsp;&nbsp;<a href=""><font size="4">去购物车</font></a> </h1>
                                 </ul>
-					</div>
+                            </div>
                       
                         
                         <!--猜你喜欢-->

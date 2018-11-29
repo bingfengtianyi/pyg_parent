@@ -12,10 +12,12 @@ import com.itheima.pyg.entity.BImageResult;
 import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.entity.ZImageResult;
 import com.itheima.pyg.entity.vo.Cart;
+import com.itheima.pyg.entity.vo.OrderVo;
 import com.itheima.pyg.pojo.item.Item;
 import com.itheima.pyg.pojo.log.PayLog;
 import com.itheima.pyg.pojo.order.Order;
 import com.itheima.pyg.pojo.order.OrderItem;
+import com.itheima.pyg.pojo.order.OrderItemQuery;
 import com.itheima.pyg.pojo.order.OrderQuery;
 import com.itheima.pyg.pojo.seller.Seller;
 import com.itheima.pyg.pojo.user.User;
@@ -207,15 +209,117 @@ public class OrderServiceImpl implements OrderService {
         redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
     }
 
+
+
     /**
-     * //查出未付款订单
+     * 查出该用户未付款订单
      * @param userId
      * @return
      */
     @Override
-    public List<Order> findOrderListByUserIdUnPay(String userId) {
-        return null;
+    public List<OrderVo> findOrderListByUserIdUnPay(String userId) {
+        List<OrderVo> orderVoList =new ArrayList<>();
+
+        OrderQuery query=new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        criteria.andStatusEqualTo("1");
+        query.setOrderByClause("create_time desc");
+        List<Order> orders = orderDao.selectByExample(query);
+
+
+        if(orders!=null && orders.size()>0){
+
+            for (Order order : orders) {
+                OrderVo orderVo=new OrderVo();
+
+                Date createTime = order.getCreateTime();
+                SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String newTime = format.format(createTime);
+                orderVo.setCreateTime(newTime);
+                orderVo.setOrderId(order.getOrderId().toString());
+
+                String sellerId = order.getSellerId();
+                if (sellerId==null){
+                    sellerId="pyg";
+                }
+
+                Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                orderVo.setNickName(seller.getNickName());
+
+                //添加订单对应商品
+                OrderItemQuery orderItemQuery=new OrderItemQuery();
+                OrderItemQuery.Criteria criteria1 = orderItemQuery.createCriteria();
+                criteria1.andOrderIdEqualTo(order.getOrderId());
+                List<OrderItem> orderItems = orderItemDao.selectByExample(orderItemQuery);
+
+                //将订单对应的商品价格和订单号存入redis
+                if(orderItems!=null && orderItems.size()>0){
+                    long totalFee=0L;
+                    for (OrderItem orderItem : orderItems) {
+                        totalFee+=orderItem.getTotalFee().doubleValue()*100;
+                    }
+                    redisTemplate.boundHashOps("unPayOrderList").put(order.getOrderId()+"",totalFee);
+                }
+                orderVo.setOrderItemList(orderItems);
+                orderVoList.add(orderVo);
+            }
+
+        }
+
+        return orderVoList;
     }
+
+
+    /**
+     * 根据订单号查找到订单金额
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public Long findTotalFeeFromRedis(String out_trade_no) {
+        return (Long) redisTemplate.boundHashOps("unPayOrderList").get(out_trade_no);
+    }
+
+
+
+
+    /**
+     * 支付成功
+     * 修改未支付订单状态
+     * @param out_trade_no 订单号
+     * @param transaction_id
+     */
+    @Override
+    public void updateUnPayOrderStatus(String out_trade_no, String transaction_id) {
+
+        //修改订单状态
+        Order order1 = orderDao.selectByPrimaryKey(Long.valueOf(out_trade_no));
+        order1.setStatus("2");
+        order1.setPaymentTime(new Date());
+        orderDao.updateByPrimaryKeySelective(order1);
+
+        //存支付日志
+        PayLog payLog = new PayLog();
+        payLog.setCreateTime(new Date());
+        payLog.setOutTradeNo(out_trade_no);
+        payLog.setPayType(order1.getPaymentType());
+        payLog.setTotalFee((Long) redisTemplate.boundHashOps("unPayOrderList").get(out_trade_no));
+        payLog.setUserId(order1.getUserId());
+        payLog.setTradeState("1");
+        payLog.setPayTime(new Date());
+        payLog.setTransactionId(transaction_id);
+        payLogDao.insertSelective(payLog);
+
+        //删除redis中该订单的数据
+        redisTemplate.boundHashOps("unPayOrderList").delete(out_trade_no);
+    }
+
+
+
+
+
+
 
     /**
      * 运营商后台,查询订单数据,用于导出excel

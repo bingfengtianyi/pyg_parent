@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.itheima.pyg.dao.user.UserDao;
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.pojo.order.OrderItem;
 import com.itheima.pyg.pojo.user.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,5 +116,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user){
         userDao.insert(user);
+    }
+
+
+    /**
+     * 用户中心，显示我的收藏
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<OrderItem> showMyCollection(String userId) {
+
+        //从缓存中读取数据
+        return (List<OrderItem>) redisTemplate.boundHashOps("MyCollections").get(userId);
     }
 }

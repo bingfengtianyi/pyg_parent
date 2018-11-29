@@ -1,6 +1,7 @@
 package com.itheima.pyg.service.user;
 
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.pojo.order.OrderItem;
 import com.itheima.pyg.pojo.user.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,4 +22,10 @@ public interface UserService {
     void save(User user);
 
 
+    /**
+     * 用户中心，显示我的收藏
+     * @param userId
+     * @return
+     */
+    List<OrderItem> showMyCollection(String userId);
 }

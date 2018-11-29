@@ -142,4 +142,42 @@ public class WxPayServiceImpl implements WxPayService {
         }
         return map;
     }
+
+
+
+
+    /**
+     * 关闭订单支付接口
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public Map closePay(String out_trade_no) {
+        //1.构建参数
+        Map<String,String> paramMap=new HashMap();
+        paramMap.put("appid",appid);
+        paramMap.put("mch_id",partner);
+        paramMap.put("out_trade_no",out_trade_no );
+        paramMap.put("nonce_str",WXPayUtil.generateNonceStr());//随机字符串
+
+        try {
+            String paramXml = WXPayUtil.generateSignedXml(paramMap, partnerkey);
+            System.out.println("关闭订单状态请求参数："+paramXml);
+            //2.发送请求
+            HttpClient httpClient=new HttpClient("https://api.mch.weixin.qq.com/pay/closeorder");
+            httpClient.setHttps(true);
+            httpClient.setXmlParam(paramXml);
+            httpClient.post();
+
+            //3.获取结果
+            String resultXml = httpClient.getContent();
+            System.out.println("关闭订单状态获取结果："+resultXml);
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(resultXml);
+            return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }
