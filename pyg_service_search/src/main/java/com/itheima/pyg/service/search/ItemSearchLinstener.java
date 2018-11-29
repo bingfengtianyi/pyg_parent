@@ -29,8 +29,9 @@ public class ItemSearchLinstener implements MessageListener {
             String json = textMessage.getText();
             // 将json转换为itemList对象
             List<Item> itemList = JSON.parseArray(json, Item.class);
+            System.out.println("监听接收itemlist"+itemList);
 
-            if (itemList!=null&&itemList.size()>0){
+           /* if (itemList!=null&&itemList.size()>0){
                 for (Item item : itemList) {
                     String spec = item.getSpec();
                     Map map = JSON.parseObject(spec, Map.class);
@@ -38,7 +39,11 @@ public class ItemSearchLinstener implements MessageListener {
                 }
                 solrTemplate.saveBeans(itemList);
                 solrTemplate.commit();
-            }
+            }*/
+
+            solrTemplate.saveBeans(itemList);
+            solrTemplate.commit();
+
         } catch (JMSException e) {
             e.printStackTrace();
         }

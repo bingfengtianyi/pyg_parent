@@ -276,7 +276,7 @@ public class GoodsServiceImpl implements GoodsService {
      * @param ids
      */
     @Override
-    public void delete(long[] ids) {
+    public void delete(Long[] ids) {
         Goods goods = new Goods();
         goods.setIsDelete("1");
         if (ids!=null&&ids.length>0){
@@ -315,7 +315,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
     /*根据商品id查询库存得到库存id*/
     @Override
-    public List<String> findItemIds(long[] ids) {
+    public List<String> findItemIds(Long[] ids) {
         List<String> itemIds = new ArrayList<>();
         for (Long id : ids) {
             ItemQuery query = new ItemQuery();
