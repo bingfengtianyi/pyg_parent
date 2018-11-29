@@ -51,4 +51,6 @@ public interface TypeTemplateService {
      * @return
      */
     List<Map> findBySpecList(long id);
+
+    List<TypeTemplate> findAll();
 }

@@ -115,6 +115,14 @@
       <if test="specName != null" >
         spec_name,
       </if>
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -123,6 +131,16 @@
       <if test="specName != null" >
         #{specName,jdbcType=VARCHAR},
       </if>
+
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
+
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.itheima.pyg.pojo.specification.SpecificationQuery" resultType="java.lang.Integer" >
