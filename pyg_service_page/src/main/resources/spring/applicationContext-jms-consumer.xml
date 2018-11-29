@@ -30,7 +30,7 @@
         <property name="messageListener" ref="itemPageListener" />
     </bean>
 
-    <!--生成商品详细页消息-->
+    <!--删除商品详细页消息-->
     <bean id="topicPageDeleteDestination" class="org.apache.activemq.command.ActiveMQTopic">
         <constructor-arg value="pinyougou_topic_page_delete"/>
     </bean>

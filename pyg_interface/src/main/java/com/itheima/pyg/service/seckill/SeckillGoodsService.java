@@ -15,7 +15,13 @@ public interface SeckillGoodsService {
      */
     List<SeckillGoods>  findSeckillGoodList();
 
+    /**
+     * 从数据库中查询秒杀活动商品
+     * @return
+     */
     List<SeckillGoods>  findSeckillGoodListFromDB();
+
+
 
     /**
      * 根据id查询秒杀商品实体对象

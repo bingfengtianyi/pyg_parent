@@ -27,7 +27,7 @@
 	<bean id="smscodeDestination" class="org.apache.activemq.command.ActiveMQQueue">
 	    <constructor-arg value="smscode"/>
 	</bean>
-<!--	生成商品详细页发布订阅消息
+	<!--生成商品详细页发布订阅消息
 	<bean id="topicPageDestination" class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg value="pinyougou_topic_page"/>
 	</bean>

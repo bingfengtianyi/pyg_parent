@@ -65,7 +65,7 @@ public interface GoodsService {
      * 逻辑删除待审核商品
      * @param ids
      */
-    void delete(long[] ids);
+    void delete(Long[] ids);
 
     /**
      * 分页获取商品列表
@@ -81,5 +81,5 @@ public interface GoodsService {
      */
     List<Item> findItemList(long[] ids);
 
-    List<String> findItemIds(long[] ids);
+    List<String> findItemIds(Long[] ids);
 }

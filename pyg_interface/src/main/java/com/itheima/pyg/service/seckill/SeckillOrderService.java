@@ -2,6 +2,8 @@ package com.itheima.pyg.service.seckill;
 
 import com.itheima.pyg.pojo.seckill.SeckillOrder;
 
+import java.util.List;
+
 /**
  * 秒杀商品订单接口
  */
@@ -34,4 +36,10 @@ public interface SeckillOrderService {
      * @param orderId
      */
     void deleteOrderFromRedis(String userId,Long orderId);
+
+    /**
+     * 从数据库中查询秒杀活动商品
+     * @return
+     */
+    List<SeckillOrder> findSeckillOrderListFromDB();
 }
