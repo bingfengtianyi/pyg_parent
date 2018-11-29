@@ -183,4 +183,82 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
+
+
+
+    /**
+     * 商品收藏
+     * @param orderItem
+     */
+    @Override
+    public void removeGoodToSC(OrderItem orderItem,String userId) {
+        //把该商品放入另外一个redis空间
+
+        List<OrderItem> orderItemList= (List<OrderItem>) redisTemplate.boundHashOps("MyCollections").get(userId);
+        if (orderItemList==null){
+            orderItemList = new ArrayList<>();
+        }else {
+            //判断需要收藏的商品在收藏的redis中是否存在
+
+
+
+
+            for (int i = 0; i < orderItemList.size(); i++) {
+                OrderItem item =  orderItemList.get(i);
+
+                //如果该商品在收藏中存在，先删除，在添加
+                if(item.getItemId().equals(orderItem.getItemId())){
+                    orderItemList.remove(item);
+                }
+            }
+
+        }
+
+        //将需要收藏的商品放入list集合
+        orderItemList.add(orderItem);
+
+        //添加到我的收藏的redis中
+        redisTemplate.boundHashOps("MyCollections").put(userId,orderItemList);
+        System.out.println("将商品添加到我的收藏"+userId+"   "+orderItem.toString());
+
+
+        //获取到购物车的redis
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(userId);
+
+        if(cartList!=null && cartList.size()>0){
+
+
+            for (int i = 0; i < cartList.size(); i++) {
+                Cart cart = cartList.get(i);
+                //先判断该商品属于哪个商家
+                if(cart.getSellerId().equals(orderItem.getSellerId())){
+
+                    //如果相同，在判断是该商家下面的哪个商品
+                    List<OrderItem> orderItemList1 = cart.getOrderItemList();
+                    for (int j = 0; j < orderItemList1.size(); j++) {
+                        OrderItem item = orderItemList1.get(j);
+                        if(item.getItemId().equals(orderItem.getItemId())){
+                            orderItemList1.remove(item);
+
+                        }
+                    }
+
+                    //当购物车只剩下一个商品的时候，删除整个cart对象
+                    if(orderItemList1.size()==0){
+                        cartList.remove(cart);
+                    }
+
+                }
+            }
+
+
+
+        }
+
+        //把修改后的cartList在放回去
+        redisTemplate.boundHashOps("cartList").put(userId,cartList);
+
+
+    }
+
 }

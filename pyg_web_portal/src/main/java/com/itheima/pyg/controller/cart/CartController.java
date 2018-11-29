@@ -2,7 +2,9 @@ package com.itheima.pyg.controller.cart;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.itheima.pyg.entity.LoginResult;
+import com.itheima.pyg.entity.Result;
 import com.itheima.pyg.entity.vo.Cart;
+import com.itheima.pyg.pojo.order.OrderItem;
 import com.itheima.pyg.service.cart.CartService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,4 +70,29 @@ public class CartController {
             return new LoginResult(true,username,cartListFromRedis);
         }
     }
+
+
+
+    /**
+     * 商品移动到我的收藏
+     * @param orderItem
+     * @return
+     */
+    @RequestMapping("removeGoodToSC")
+    public Result removeGoodToSC(@RequestBody OrderItem orderItem){
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!"anonymousUser".equals(userId)){
+            try {
+                cartService.removeGoodToSC(orderItem,userId);
+                return new Result(true,"收藏成功");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new Result(false,"收藏失败");
+            }
+        }
+
+        //用户没登录
+        return new Result(false,"请登录");
+    }
+
 }

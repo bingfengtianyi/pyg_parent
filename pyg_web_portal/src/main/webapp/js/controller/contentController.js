@@ -15,5 +15,23 @@ app.controller("contentController",function($scope,$controller,contentService){
 	$scope.search=function(){
 		location.href="http://localhost:9103/search.html#?keywords="+$scope.keywords;
 	}
+
+
+    $scope.orderItemList=[];
+    //我的收藏
+    $scope.showMyCollection=function () {
+        contentService.showMyCollection().success(
+            function (response) {
+
+                //$scope.orderItemList=response;
+                if(response!=null) {
+                    $scope.orderItemList=response;
+                }else {
+                    //如果该用户没有收藏商品
+                    $scope.orderItemList=[];
+                }
+            }
+        )
+    }
 	
 });
