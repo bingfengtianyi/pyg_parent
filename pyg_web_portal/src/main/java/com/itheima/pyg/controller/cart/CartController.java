@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("cart")
+@RequestMapping("/cart")
 public class CartController {
     @Reference(timeout = 6000)
     private CartService cartService;
@@ -24,7 +24,7 @@ public class CartController {
      * @param num
      * @return
      */
-    @RequestMapping("addGoodsToCartList")
+    @RequestMapping("/addGoodsToCartList")
     public LoginResult addGoodsToCartList(@RequestBody List<Cart> cartList,Long itemId, Integer num){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("当前登录用户名:"+name);
@@ -51,7 +51,7 @@ public class CartController {
      * 查找购物车,主要作用是判断用户是否登录
      * @return
      */
-    @RequestMapping("findCartList")
+    @RequestMapping("/findCartList")
     public LoginResult findCartList(@RequestBody List<Cart>  cartList){
         //从springSecurity中获取用户名
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

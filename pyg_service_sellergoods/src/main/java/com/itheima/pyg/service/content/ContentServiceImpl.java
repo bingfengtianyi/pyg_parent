@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,19 +90,24 @@ public class ContentServiceImpl implements ContentService {
 	 */
 	@Override
 	public List<Content> findByCategoryId(long categoryId) {
-		List<Content> contentList = (List<Content>) redisTemplate.boundHashOps("content").get(categoryId);
-		if (contentList==null){
-			synchronized (this){
-				contentList = (List<Content>) redisTemplate.boundHashOps("content").get(categoryId);
-				if (contentList==null){
-					ContentQuery contentQuery = new ContentQuery();
-					contentQuery.createCriteria().andCategoryIdEqualTo(categoryId).andStatusEqualTo("1");
-					contentList = contentDao.selectByExample(contentQuery);
-					redisTemplate.boundHashOps("content").put(categoryId,contentList);
-					redisTemplate.boundHashOps("content").expire(1,TimeUnit.DAYS);
+		BoundHashOperations content = redisTemplate.boundHashOps("content");
+		if (content!=null){
+			List<Content> contentList = (List<Content>) redisTemplate.boundHashOps("content").get(categoryId);
+			if (contentList==null){
+				synchronized (this){
+					contentList = (List<Content>) redisTemplate.boundHashOps("content").get(categoryId);
+					if (contentList==null){
+						ContentQuery contentQuery = new ContentQuery();
+						contentQuery.createCriteria().andCategoryIdEqualTo(categoryId).andStatusEqualTo("1");
+						contentList = contentDao.selectByExample(contentQuery);
+						redisTemplate.boundHashOps("content").put(categoryId,contentList);
+						redisTemplate.boundHashOps("content").expire(1,TimeUnit.DAYS);
+					}
 				}
 			}
+			return contentList;
+		}else {
+			return null;
 		}
-		return contentList;
 	}
 }

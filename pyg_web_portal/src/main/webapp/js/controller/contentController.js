@@ -1,4 +1,8 @@
-app.controller("contentController",function($scope,contentService){
+app.controller("contentController",function($scope,$controller,contentService){
+	//开始
+    // AngularJS中的继承:伪继承
+    $controller('itemCatController',{$scope:$scope});
+	//结束
 	$scope.contentList = [];
 	// 根据分类ID查询广告的方法:
 	$scope.findByCategoryId = function(categoryId){

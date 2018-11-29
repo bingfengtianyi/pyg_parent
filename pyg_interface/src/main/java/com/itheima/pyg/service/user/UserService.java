@@ -2,7 +2,6 @@ package com.itheima.pyg.service.user;
 
 import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.pojo.user.User;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;

@@ -4,4 +4,8 @@ app.service('userService',function($http){
         return $http.get("../user/findUserList.action?pageNum="+page+"&pageSize="+rows);
     }
 
+    this.findUser= function(){
+        return $http.get("../userCount/findUser.action");
+    }
+
 });
