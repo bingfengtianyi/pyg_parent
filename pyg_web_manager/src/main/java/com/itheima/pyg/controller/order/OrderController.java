@@ -7,12 +7,14 @@ import com.itheima.pyg.entity.ZImageResult;
 import com.itheima.pyg.pojo.order.Order;
 import com.itheima.pyg.pojo.user.User;
 import com.itheima.pyg.service.order.OrderService;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("order")
@@ -45,6 +47,7 @@ public class OrderController {
         }
     }
 
+
     /**
      * 运营商后台查询各个商家销售额
      * @return
@@ -53,4 +56,26 @@ public class OrderController {
     public BImageResult findTotalMoneyBySellerId(){
         return orderService.findTotalMoneyBySellerId();
     }
+
+
+
+    /**
+     * 需求1:运营商订单查询
+     * @param
+     * @param
+     * @param order
+     * @return
+     */
+    @RequestMapping("/search")
+    public PageResult selectOrder(Integer page, Integer rows, @RequestBody Order order) {
+        return orderService.selectOrder(page, rows, order);
+    }
+
+
+    @RequestMapping("/findAll")
+    public List<Order> findAll() {
+        return orderService.findAll();
+    }
+
+
 }

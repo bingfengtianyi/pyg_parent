@@ -48,6 +48,9 @@ public interface OrderService {
     List<Order> getOrderList();
 
 
+
+
+
     PageResult<Order> getOrderListByPage(Integer pageNum, Integer pageSize);
 
     ZImageResult findOrderCountByTime(Date startTime, Date endTime);
@@ -55,4 +58,10 @@ public interface OrderService {
     BImageResult findTotalMoneyBySellerId();
 
     PageResult<Order> getOrderListByPageAndSeller(Integer pageNum, Integer pageSize,String seller);
+
+
+    // 订单查询
+    public PageResult selectOrder(Integer pageNum, Integer pageSize, Order order);
+
+    public List<Order> findAll();
 }

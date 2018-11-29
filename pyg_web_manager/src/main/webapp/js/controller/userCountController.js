@@ -5,7 +5,7 @@ app.controller('userCountController', function ($scope, userService) {
 
         userService.findUser().success(function (response) {
             $scope.num = response;
-            alert("当前用户总人数为:"+num);
+            alert("当前用户总人数为:"+$scope.num);
         })
     };
 });

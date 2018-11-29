@@ -5,7 +5,7 @@ app.controller('orderController',function($scope,$controller,$location,orderServ
 
     $scope.reloadList = function(){
         // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-        $scope.findPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
+        $scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
     }
     // 分页查询
     $scope.findPage = function(page,rows){
@@ -33,6 +33,33 @@ app.controller('orderController',function($scope,$controller,$location,orderServ
             }
         )
     }
+
+
+
+
+    //读取列表数据绑定到表单中
+    $scope.findAll=function(){
+        orderService.findAll().success(
+            function(response){
+                $scope.list=response;
+            }
+        );
+        $scope.search();
+    }
+
+
+    $scope.searchEntity={};//定义搜索对象
+    //搜索
+    $scope.search=function(page,rows){
+
+        orderService.search(page,rows,$scope.searchEntity).success(
+            function(response){
+                $scope.list=response.rows;
+                $scope.paginationConf.totalItems=response.total;//更新总记录数
+            }
+        );
+    }
+
 
 
 });

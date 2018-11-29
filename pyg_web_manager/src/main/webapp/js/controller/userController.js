@@ -8,6 +8,8 @@ app.controller('userController',function($scope,$controller,$location,userServic
         // $scope.findByPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
         $scope.findPage($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
     }
+
+
     // 分页查询
     $scope.findPage = function(page,rows){
         // 向后台发送请求获取数据:
@@ -16,4 +18,6 @@ app.controller('userController',function($scope,$controller,$location,userServic
             $scope.list = response.rows;
         });
     };
+
+
 });
