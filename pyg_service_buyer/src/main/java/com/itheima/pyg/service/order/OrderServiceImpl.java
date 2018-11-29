@@ -377,6 +377,8 @@ public class OrderServiceImpl implements OrderService {
         return result;
     }
 
+
+
     /**
      * 运营商后台查询各商家销售额
      * @return
@@ -417,4 +419,48 @@ public class OrderServiceImpl implements OrderService {
         result.setMoneyList(moneyList.toArray(longs));
         return result;
     }
+
+
+
+    /**
+     * 需求1: 运营商订单查询
+     * @param pageNum
+     * @param pageSize
+     * @param order
+     * @return
+     */
+    @Override
+    public PageResult selectOrder(Integer pageNum, Integer pageSize, Order order) {
+        // 设置分页条件
+        PageHelper.startPage(pageNum, pageSize);
+
+        OrderQuery orderQuery = new OrderQuery();
+        OrderQuery.Criteria criteria = orderQuery.createCriteria();
+
+        if (order.getSellerId() != null && !"".equals(order.getSellerId().trim())) {
+            criteria.andSellerIdEqualTo(order.getSellerId());
+        }
+
+        if (order.getOrderId() != null && !"".equals(order.getOrderId())) {
+            criteria.andOrderIdEqualTo(order.getOrderId());
+        }
+
+        //需求2. 实现根据商家ID或者订单编号  查询订单
+        Page<Order> page = (Page<Order>) orderDao.selectByExample(orderQuery);
+        // 将数据封装到PageResult中
+        PageResult pageResult = new PageResult(page.getTotal(), page.getResult());
+        return pageResult;
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Order> findAll() {
+        return orderDao.selectByExample(null);
+    }
+
+
 }

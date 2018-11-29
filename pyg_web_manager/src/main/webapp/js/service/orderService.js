@@ -16,4 +16,23 @@ app.service('orderService',function($http){
         return $http.get("../order/findTotalMoneyBySellerId.action");
     }
 
+
+
+
+    //读取列表数据绑定到表单中
+    this.findAll=function(){
+        return $http.get('../order/findAll.action');
+    }
+
+
+
+
+    //搜索
+    this.search=function(page,rows,searchEntity){
+        return $http.post('../order/search.action?page='+page+"&rows="+rows, searchEntity);
+    }
+
+
+
+
 });
