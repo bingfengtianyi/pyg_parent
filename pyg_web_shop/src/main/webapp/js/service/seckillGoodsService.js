@@ -1,10 +1,5 @@
-app.service('seckillGoodsService',function ($http) {
-
+app.service('seckillGoodsServices',function ($http) {
     this.findList = function () {
-        return $http.get("seckillGoods/findList.action");
+        return $http.get("../seckillAppGoods/findList.action");
     };
-
-    this.findOne = function (id) {
-        return $http.get("seckillGoods/findOneFromRedis.action?id="+id);
-    }
 });

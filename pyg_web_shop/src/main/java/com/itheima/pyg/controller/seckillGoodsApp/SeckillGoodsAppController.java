@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("seckillGoods")
+@RequestMapping("seckillAppGoods")
 public class SeckillGoodsAppController {
 
     @Reference
     private SeckillGoodsService seckillGoodsService;
 
-    /**
+    /**\
      * 查询参与秒杀活动的商品列表
      * @return
      */
