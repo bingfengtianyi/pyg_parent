@@ -33,8 +33,8 @@ app.controller('payController' ,function($scope ,$location,payService){
 					location.href="paysuccess.html#?money="+$scope.money;
 				}else{
 					if(response.message=='二维码超时'){
-						alert(response.message);
-						location.href="payfail.html";
+                        alert(response.message);
+                        location.href="payclose.html";
 					}else{
 						location.href="payfail.html";
 					}

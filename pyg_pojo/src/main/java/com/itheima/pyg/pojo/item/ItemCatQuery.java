@@ -249,6 +249,21 @@ public class ItemCatQuery {
             return (Criteria) this;
         }
 
+
+        /**
+         * revise start: 1 Criteria增加seller_Id封装条件  gengweiwei
+         */
+        public Criteria andSellerIdEqualTo(String value) {
+            addCriterion("seller_Id =", value, "sellerId");
+            return (Criteria) this;
+        }
+
+        /**
+         * revise end: 1 Criteria增加seller_Id封装条件  gengweiwei
+         */
+
+
+
         public Criteria andNameNotEqualTo(String value) {
             addCriterion("name <>", value, "name");
             return (Criteria) this;

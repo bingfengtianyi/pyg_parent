@@ -21,6 +21,7 @@
 
     <http use-expressions="false" entry-point-ref="casProcessingFilterEntryPoint">
         <intercept-url pattern="/cart/*.action" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/user/*.action" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <csrf disabled="true"/>
         <!-- custom-filter为过滤器， position 表示将过滤器放在指定的位置上，before表示放在指定位置之前  ，after表示放在指定的位置之后  -->
@@ -33,7 +34,8 @@
     <beans:bean id="casProcessingFilterEntryPoint"
                 class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
         <!-- 单点登录服务器登录URL -->
-        <beans:property name="loginUrl" value="http://localhost:8020/cas/login"/>
+        <!--<beans:property name="loginUrl" value="http://localhost:8020/cas/login"/>-->
+        <beans:property name="loginUrl" value="http://localhost:9100/cas/login"/>
         <beans:property name="serviceProperties" ref="serviceProperties"/>
     </beans:bean>
     <beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
@@ -64,7 +66,8 @@
         <!-- ticketValidator 为票据验证器 -->
         <beans:property name="ticketValidator">
             <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
-                <beans:constructor-arg index="0" value="http://localhost:8020/cas"/>
+                <!--<beans:constructor-arg index="0" value="http://localhost:8020/cas"/>-->
+                <beans:constructor-arg index="0" value="http://localhost:9100/cas"/>
             </beans:bean>
         </beans:property>
         <beans:property name="key" value="an_id_for_this_auth_provider_only"/>

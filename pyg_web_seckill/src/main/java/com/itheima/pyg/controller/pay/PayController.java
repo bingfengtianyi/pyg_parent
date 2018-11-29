@@ -58,6 +58,8 @@ public class PayController {
                 }
             }else {
                 seckillOrderService.deleteOrderFromRedis(userId,Long.valueOf(out_trade_no));
+                //关闭订单支付
+                wxPayService.closePay(out_trade_no);
                 return new Result(false,"二维码超时");
             }
         }

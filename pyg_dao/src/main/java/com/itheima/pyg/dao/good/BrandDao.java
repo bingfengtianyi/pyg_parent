@@ -31,8 +31,20 @@ public interface BrandDao {
 
     int updateByPrimaryKey(Brand record);
 
+
+    /**
+     * revise start: 批量删除 Long[] ids包装类型修改为 long[] ids 基本类型 gengweiwei
+     * @param ids
+     */
     //批量删除
-    void deleteByPrimaryKeys(Long[] ids);
+    void deleteByPrimaryKeys(long[] ids);
+    /**
+     * revise end: 批量删除 Long[] ids包装类型修改为 long[] ids 基本类型 gengweiwei
+     * @param ids
+     */
+
+
+
 
     /**
      * 新增模板品牌列表查询

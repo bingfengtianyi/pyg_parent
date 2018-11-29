@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserDao {
+
     int countByExample(UserQuery example);
 
     int deleteByExample(UserQuery example);
@@ -20,6 +21,9 @@ public interface UserDao {
     List<User> selectByExample(UserQuery example);
 
     User selectByPrimaryKey(Long id);
+
+    //用户
+    Long selectUser();
 
     int updateByExampleSelective(@Param("record") User record, @Param("example") UserQuery example);
 

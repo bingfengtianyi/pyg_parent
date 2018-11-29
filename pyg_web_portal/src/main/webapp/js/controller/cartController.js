@@ -124,4 +124,24 @@ app.controller('cartController',function($scope,$location,cartService,addressSer
         )
     }
 
+
+
+    //移动到我的关注
+    $scope.removeGoodToSC=function (item) {
+        //alert(JSON.stringify(item));
+        cartService.removeGoodToSC(item).success(
+            function (respose) {
+                //返回一个result结果集
+                if(respose.flag){
+                    alert(respose.message);
+                    $scope.findCartList();
+                }else {
+                    alert(respose.message);
+                }
+            }
+        )
+
+    }
+
+
 });

@@ -87,6 +87,17 @@
       order by ${orderByClause}
     </if>
   </select>
+  <!--添加findItemCatListByParentId方法-->
+  <select id="findItemCatListByParentId" resultMap="BaseResultMap" >
+ select
+ /*这里查询直接用字段名，查询的性能会比用*高一点*/
+    id,parent_id,name,type_id
+    from
+    tb_item_cat
+    where
+    /*parentId为findItemCatListByParentId方法传递的参数*/
+    parent_id=#{parentId}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     id,parent_id,name,type_id
@@ -124,6 +135,14 @@
       <if test="typeId != null" >
         type_id,
       </if>
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -138,6 +157,17 @@
       <if test="typeId != null" >
         #{typeId,jdbcType=BIGINT},
       </if>
+
+
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <!-- revise start: 增加插入sellerId判空字段 gengweiwei-->
+
+
+
+
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.itheima.pyg.pojo.item.ItemCatQuery" resultType="java.lang.Integer" >

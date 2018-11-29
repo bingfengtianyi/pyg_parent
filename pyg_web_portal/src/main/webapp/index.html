@@ -3,12 +3,14 @@
 
 <head>
 	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>品优购，优质！优质！</title>
 	 <link rel="icon" href="assets/img/favicon.ico">
-
+    <!--引入商品分类列表样式 开始-->
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-JD-index.css" />
+	<!--引入商品分类列表样式  结束-->
     <link rel="stylesheet" type="text/css" href="css/widget-jquery.autocomplete.css" />
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
     
@@ -19,11 +21,18 @@
     
     <script type="text/javascript" src="./js/base.js"></script>
     <script type="text/javascript" src="./js/service/contentService.js"></script>
+	<script type="text/javascript" src="./js/controller/contentController.js"></script>
+	<script type="text/javascript" src="./js/service/itemCatService.js"></script>
+	<script type="text/javascript" src="./js/controller/itemCatController.js"></script>
+	<!--引入广告相关的script 结束-->
+
     <script type="text/javascript" src="./js/controller/contentController.js"></script>
-   
+
+
 </head>
 
-<body ng-app="pinyougou" ng-controller="contentController" ng-init="findByCategoryId(1)">
+<body ng-app="pinyougou" ng-controller="contentController" ng-init="findByCategoryId(1);findItemCatList()">
+<body ng-app="pinyougou" ng-controller="contentController" ng-init="findByCategoryId(1);showMyCollection()">
 	<!-- 头部栏位 -->
 	<!--页面顶部-->
 <div id="nav-bottom">

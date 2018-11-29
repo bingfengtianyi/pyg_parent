@@ -189,6 +189,23 @@ public class SpecificationQuery {
             return (Criteria) this;
         }
 
+
+
+        /**
+         * revise start: 1 Criteria增加seller_Id封装条件  gengweiwei
+         */
+        public Criteria andSellerIdEqualTo(String value) {
+            addCriterion("seller_Id =", value, "sellerId");
+            return (Criteria) this;
+        }
+
+        /**
+         * revise end: 1 Criteria增加seller_Id封装条件  gengweiwei
+         */
+
+
+
+
         public Criteria andSpecNameNotEqualTo(String value) {
             addCriterion("spec_name <>", value, "specName");
             return (Criteria) this;

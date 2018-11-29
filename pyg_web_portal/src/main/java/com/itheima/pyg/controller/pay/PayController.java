@@ -47,6 +47,8 @@ public class PayController {
                 orderService.updateOrderStatus(out_trade_no,map.get("transaction_id"));
                 return new Result(true,"支付成功");
             }else {
+                //关闭订单支付
+                wxPayService.closePay(out_trade_no);
                 return new Result(false,"二维码超时");
             }
         }

@@ -13,6 +13,8 @@ import com.itheima.pyg.pojo.specification.SpecificationOption;
 import com.itheima.pyg.pojo.specification.SpecificationOptionQuery;
 import com.itheima.pyg.pojo.specification.SpecificationQuery;
 import com.itheima.pyg.service.spec.SpecificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -27,6 +29,20 @@ public class SpecificationServiceImpl   implements SpecificationService {
 
     @Resource
     private SpecificationOptionDao specificationOptionDao;
+
+
+    /**
+     * revise start: 添加RedisTemplate字段  gengweiwei
+     */
+    @Autowired
+    private RedisTemplate redisTemplate;
+    /**
+     * revise end: 添加RedisTemplate字段  gengweiwei
+     */
+
+
+
+
     /**
      * 查询全部规格信息
      * @return
@@ -64,6 +80,19 @@ public class SpecificationServiceImpl   implements SpecificationService {
         if (specification.getSpecName()!=null&&!"".equalsIgnoreCase(specification.getSpecName().trim())){
             specificationQuery.createCriteria().andSpecNameLike("%"+specification.getSpecName()+"%");
         }
+
+        /**
+         * revise start: 1 判断sellerId且封装到criteria对象中,详见对应SpecificationQuery类增加条件  gengweiwei
+         */
+
+        if(specification.getSellerId()!=null&&!"".equalsIgnoreCase(specification.getSellerId().trim())){
+            specificationQuery.createCriteria().andSellerIdEqualTo(specification.getSellerId().trim());
+        }
+
+        /**
+         * revise end: 1 判断sellerId且封装到criteria对象中,详见对应SpecificationQuery类增加条件  gengweiwei
+         */
+
         specificationQuery.setOrderByClause("id desc");
         Page<Specification> page = (Page<Specification>) specificationDao.selectByExample(specificationQuery);
         return new PageResult(page.getTotal(),page.getResult());
@@ -77,8 +106,23 @@ public class SpecificationServiceImpl   implements SpecificationService {
     public Result add(SpecificationVo specificationVo) {
         Result result = null;
         try {
+
+            /**
+             * revise start: 存入Set类型  gengweiwei
+             */
             Specification specification = specificationVo.getSpecification();
             specificationDao.insertSelective(specification);
+            // 1 商家将新建规格存入redis且以"Specification_status=0"为键表明为待审核状态,值为插入对象specification
+            redisTemplate.boundSetOps("Specification_status=0").add(specification);
+            //2 运营商可以通过下面.members方法取出存入在redis中的Set集合,遍历即可取出所有对象specification,
+            // 后续建议将"Specification_status=0"更改为"Specification_status=1"
+            Set members = redisTemplate.boundSetOps("Specification_status=0").members();
+            for (Object member : members) {
+                System.out.println("每一个specification对象明细如下"+member);
+            }
+            /**
+             * revise end: 存入Set类型  gengweiwei
+             */
             List<SpecificationOption> specificationOptionList = specificationVo.getSpecificationOptionList();
             if (specificationOptionList!=null&&specificationOptionList.size()>0){
                 for (SpecificationOption specificationOption : specificationOptionList) {
@@ -178,6 +222,6 @@ public class SpecificationServiceImpl   implements SpecificationService {
 
     @Override
     public void save(Specification specification) {
-
+        specificationDao.insertSelective(specification);
     }
 }

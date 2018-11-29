@@ -164,6 +164,7 @@
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
             </dependency>
+            <!--文件上传-->
             <dependency>
                 <groupId>org.csource.fastdfs</groupId>
                 <artifactId>fastdfs</artifactId>
@@ -266,6 +267,7 @@
                 <artifactId>xml-apis</artifactId>
                 <version>1.4.01</version>
             </dependency>
+            <!--github-->
             <dependency>
                 <groupId>com.github.wxpay</groupId>
                 <artifactId>wxpay-sdk</artifactId>

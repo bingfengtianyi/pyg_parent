@@ -54,7 +54,8 @@
         </authentication-provider>
     </authentication-manager>
 
-    <authentication-manager>
+   <!-- revise start: 删除固定用户名密码认证登陆 gengweiwei
+   <authentication-manager>
         <authentication-provider>
             <user-service>
                 <user name="admin" password="123456" authorities="ROLE_SELLER"/>
@@ -62,6 +63,7 @@
             </user-service>
         </authentication-provider>
     </authentication-manager>
+    revise end: 删除固定用户名密码认证登陆 gengweiwei-->
 
 
 

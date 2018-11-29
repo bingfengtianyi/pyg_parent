@@ -1,6 +1,7 @@
 package com.itheima.pyg.pojo.item;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ItemCat implements Serializable {
     /**
@@ -22,6 +23,24 @@ public class ItemCat implements Serializable {
      * 类型id
      */
     private Long typeId;
+
+    /**
+     * 新添加的 11.28
+     * 添加下级属性分类集合作为属性
+     */
+    private List<ItemCat> itemCatList;
+
+    /**
+     * 新添加的itemcatlist方法
+     * @return
+     */
+    public List<ItemCat> getItemCatList() {
+        return itemCatList;
+    }
+
+    public void setItemCatList(List<ItemCat> itemCatList) {
+        this.itemCatList = itemCatList;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -57,6 +76,24 @@ public class ItemCat implements Serializable {
         this.typeId = typeId;
     }
 
+
+
+    /**
+     * revise start: 1 新增商家ID字段,即商家名称 2 添加get set方法 3 tostring方法添加sellerId字段   gengweiwei
+     */
+    //修改1 新增商家ID字段,即商家名称
+    private String sellerId;
+
+    //修改2 添加get set方法
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -67,10 +104,16 @@ public class ItemCat implements Serializable {
         sb.append(", parentId=").append(parentId);
         sb.append(", name=").append(name);
         sb.append(", typeId=").append(typeId);
+        //修改3 tostring方法添加sellerId字段
+        sb.append(", sellerId=").append(sellerId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }
+
+    /**
+     * revise end: 1 新增商家ID字段,即商家名称 2 添加get set方法 3 tostring方法添加sellerId字段   gengweiwei
+     */
 
     @Override
     public boolean equals(Object that) {
