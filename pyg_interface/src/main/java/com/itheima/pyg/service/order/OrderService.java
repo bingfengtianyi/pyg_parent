@@ -47,7 +47,7 @@ public interface OrderService {
      */
     List<Order> getOrderList();
 
-
+    List<OrderVo> getOrderListByPageAndUserId(String userId);
 
     PageResult<Order> getOrderListByPage(Integer pageNum, Integer pageSize);
 

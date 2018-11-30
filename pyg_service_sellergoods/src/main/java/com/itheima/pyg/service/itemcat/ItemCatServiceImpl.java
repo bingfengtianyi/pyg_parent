@@ -97,7 +97,16 @@ public class ItemCatServiceImpl implements ItemCatService {
         List<ItemCat> itemCats = itemCatDao.selectByExample(null);
         if (itemCats != null && itemCats.size() > 0) {
             for (ItemCat itemCat : itemCats) {
-                redisTemplate.boundHashOps("itemCat").put(itemCat.getName(), itemCat.getTypeId());
+                /**
+                 * revise start: 增加非空判断  gengweiwei 2018-11-30
+                 */
+                if (itemCat.getName()!=null) {
+                    redisTemplate.boundHashOps("itemCat").put(itemCat.getName(), itemCat.getTypeId());
+                }
+                /**
+                 * revise end: 增加非空判断  gengweiwei 2018-11-30
+                 */
+
             }
         }
             /**

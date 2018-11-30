@@ -84,6 +84,50 @@ public class OrderServiceImpl implements OrderService {
         return pageResult;
     }
 
+    @Override
+    public List<OrderVo> getOrderListByPageAndUserId(String userId) {
+        List<OrderVo> orderVoList =new ArrayList<>();
+
+        OrderQuery query=new OrderQuery();
+        OrderQuery.Criteria criteria = query.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        query.setOrderByClause("create_time desc");
+        List<Order> orders = orderDao.selectByExample(query);
+
+
+        if(orders!=null && orders.size()>0){
+
+            for (Order order : orders) {
+                OrderVo orderVo=new OrderVo();
+
+                Date createTime = order.getCreateTime();
+                SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String newTime = format.format(createTime);
+                orderVo.setCreateTime(newTime);
+                orderVo.setOrderId(order.getOrderId().toString());
+
+                String sellerId = order.getSellerId();
+                if (sellerId==null){
+                    sellerId="pyg";
+                }
+
+                Seller seller = sellerDao.selectByPrimaryKey(sellerId);
+                orderVo.setNickName(seller.getNickName());
+
+                //添加订单对应商品
+                OrderItemQuery orderItemQuery=new OrderItemQuery();
+                OrderItemQuery.Criteria criteria1 = orderItemQuery.createCriteria();
+                criteria1.andOrderIdEqualTo(order.getOrderId());
+                List<OrderItem> orderItems = orderItemDao.selectByExample(orderItemQuery);
+
+                orderVo.setOrderItemList(orderItems);
+                orderVoList.add(orderVo);
+            }
+
+        }
+
+        return orderVoList;
+    }
 
     /**
      * 保存订单信息及订单明细到数据库

@@ -2,7 +2,7 @@
 app.controller('userController',function($scope,$controller,userService,orderService){
 
     // AngularJS中的继承:伪继承
-    $controller('indexController',{$scope:$scope});
+    $controller('baseController',{$scope:$scope});
 
     //注册
     $scope.reg=function(){
@@ -58,6 +58,14 @@ app.controller('userController',function($scope,$controller,userService,orderSer
                     //如果该用户没有收藏商品
                     location.href="home-person-collectNone.html";
                 }
+            }
+        )
+    }
+
+    $scope.findOrderListByPageAndUserId = function () {
+        orderService.findOrderListByPageAndUserId().success(
+            function (response) {
+                $scope.orderVoList=response;
             }
         )
     }

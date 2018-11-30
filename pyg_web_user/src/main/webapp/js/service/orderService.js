@@ -7,4 +7,7 @@ app.service('orderService',function($http){
         return $http.get('order/findOrderListUnPay.action');
     }
 
+    this.findOrderListByPageAndUserId = function () {
+        return $http.get('order/findOrderListByPageAndUserId.action');
+    }
 });

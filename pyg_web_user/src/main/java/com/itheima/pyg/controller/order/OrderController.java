@@ -37,4 +37,10 @@ public class OrderController {
         return orderList;
     }
 
+    @RequestMapping("findOrderListByPageAndUserId")
+    public List<OrderVo> findOrderListByPageAndUserId(){
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return orderService.getOrderListByPageAndUserId(userId);
+    }
+
 }
