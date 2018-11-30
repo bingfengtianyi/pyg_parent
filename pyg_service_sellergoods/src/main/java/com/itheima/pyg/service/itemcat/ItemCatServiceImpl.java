@@ -5,12 +5,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.itheima.pyg.dao.item.ItemCatDao;
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.entity.Result;
 import com.itheima.pyg.pojo.item.ItemCat;
 import com.itheima.pyg.pojo.item.ItemCatQuery;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -65,20 +67,33 @@ public class ItemCatServiceImpl implements ItemCatService {
     }
 
 
+    /**
+     * revise start: 修改接口 添加方法补充完成  gengweiwei 2018-11-29
+     */
     @Override
-    public void save(ItemCat itemCat) {
+    public Result save(ItemCat itemCat) {
 
-        /**
-         * revise start: 添加方法补充完成  gengweiwei
-         */
-        itemCatDao.insertSelective(itemCat);
-        // 1 商家将新建品牌存入redis且设置以"ItemCat_status=0"为键表明为待审核状态,值为插入对象itemCat
-        redisTemplate.boundSetOps("ItemCat_status=0").add(itemCat);
-        //2 运营商可以通过下面.members方法取出存入在redis中的Set集合,遍历即可取出所有对象itemCat,
-        // 后续建议将"ItemCat_status=0"更改为"ItemCat_status=1"
-        Set members = redisTemplate.boundSetOps("ItemCat_status=0").members();
-        for (Object member : members) {
-            System.out.println("每一个itemCat对象明细如下"+member);
+
+        Result result = new Result();
+        try {
+            itemCatDao.insertSelective(itemCat);
+            // 1 商家将新建品牌存入redis且设置以"ItemCat_status=0"为键表明为待审核状态,值为插入对象itemCat
+            redisTemplate.boundSetOps("ItemCat_status=0").add(itemCat);
+            //2 运营商可以通过下面.members方法取出存入在redis中的Set集合,遍历即可取出所有对象itemCat,
+            // 后续建议将"ItemCat_status=0"更改为"ItemCat_status=1"
+            Set members = redisTemplate.boundSetOps("ItemCat_status=0").members();
+            for (Object member : members) {
+                System.out.println("每一个itemCat对象明细如下"+member);
+            }
+
+            result.setFlag(true);
+            result.setMessage("创建分类成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setFlag(false);
+            result.setMessage("创建分类失败");
+        }finally {
+            return result;
         }
         /**
          * revise end: 添加方法补充完成  gengweiwei
@@ -174,6 +189,61 @@ public class ItemCatServiceImpl implements ItemCatService {
 
     /**
      * revise start: 增加带条件的分页查询接口实现类  gengweiwei
+     */
+
+
+    /**
+     * revise start: 删除功能实现类  gengweiwei 2018-11-29
+     */
+    @Override
+    public Result delete(long[] ids) {
+        Result result = null;
+        try {
+            ItemCatQuery itemCatQuery = new ItemCatQuery();
+            List<Long>  idsList = new ArrayList<>();
+            if (ids!=null&&ids.length>0){
+                for (long id : ids) {
+                    idsList.add(id);
+                }
+            }
+            itemCatQuery.createCriteria().andIdIn(idsList);
+            itemCatDao.deleteByExample(itemCatQuery);
+            result = new Result(true,"删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new Result(false,"删除失败");
+        } finally {
+            return result;
+        }
+    }
+
+
+    /**
+     * revise end: 删除功能实现类  gengweiwei 2018-11-29
+     */
+
+
+
+
+    /**
+     * revise start: 更新功能实现类  gengweiwei 2018-11-29
+     */
+    @Override
+    public Result update(ItemCat itemCat) {
+        Result result = null;
+        try {
+            itemCatDao.updateByPrimaryKey(itemCat);
+            result = new Result(true,"更新成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = new Result(false,"更新失败");
+        } finally {
+            return result;
+        }
+    }
+
+    /**
+     * revise end: 更新功能实现类  gengweiwei 2018-11-29
      */
 
 }

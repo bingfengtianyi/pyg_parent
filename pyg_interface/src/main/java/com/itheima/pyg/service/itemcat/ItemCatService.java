@@ -1,6 +1,7 @@
 package com.itheima.pyg.service.itemcat;
 
 import com.itheima.pyg.entity.PageResult;
+import com.itheima.pyg.entity.Result;
 import com.itheima.pyg.pojo.item.ItemCat;
 
 import java.util.List;
@@ -15,12 +16,22 @@ public interface ItemCatService {
      * 向数据库添加分类,用于excel数据导入数据库
      * @param itemCat
      */
-    void save(ItemCat itemCat);
+
+
+    /**
+     * revise start: 修改接口返回值   gengweiwei 2018-11-29
+     */
+    Result save(ItemCat itemCat);
     /**
      * 根据父ID查询分类列表
      * @param parentId
      * @return
      */
+
+    /**
+     * revise end: 修改接口返回值   gengweiwei 2018-11-29
+     */
+
     List<ItemCat> findByParentId(long parentId);
 
     /**
@@ -57,5 +68,25 @@ public interface ItemCatService {
     /**
      * revise end: 增加带条件的分页查询接口  gengweiwei
      */
+
+
+    /**
+     * revise start: 删除分类   gengweiwei 2018-11-29
+     * @param ids
+     * @return
+     */
+    Result delete(long[] ids);
+    /**
+     * revise end: 删除分类  gengweiwei 2018-11-29
+     */
+
+
+
+    /**
+     * 更新分类
+     * @param itemCat
+     * @return
+     */
+    Result update(ItemCat itemCat);
 
 }
