@@ -4,10 +4,13 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.itheima.pyg.dao.good.BrandDao;
 import com.itheima.pyg.dao.specification.SpecificationOptionDao;
 import com.itheima.pyg.dao.template.TypeTemplateDao;
 import com.itheima.pyg.entity.PageResult;
 import com.itheima.pyg.entity.Result;
+import com.itheima.pyg.pojo.good.Brand;
+import com.itheima.pyg.pojo.good.BrandQuery;
 import com.itheima.pyg.pojo.specification.SpecificationOption;
 import com.itheima.pyg.pojo.specification.SpecificationOptionQuery;
 import com.itheima.pyg.pojo.template.TypeTemplate;
@@ -206,4 +209,31 @@ public class TypeTemplateServiceImpl    implements TypeTemplateService {
     public List<TypeTemplate> findAll() {
         return typeTemplateDao.selectByExample(null);
     }
+
+
+    @Resource
+    private BrandDao brandDao;
+    @Override
+    public List<Map> findByBrandList(long id) {
+        //根据模板id查到模板对象
+        TypeTemplate typeTemplate = typeTemplateDao.selectByPrimaryKey(id);
+        //根据模板对象获得对应的规格对象,为一个json字符串
+        String brandIds = typeTemplate.getBrandIds();
+        //用fastjosn将json字符串转成json对象
+        //[{"id":27,"text":"网络"},{"id":32,"text":"机身内存"}]
+        List<Map> maps = JSON.parseArray(brandIds, Map.class);
+        //根据规格查询规格选项
+        if (maps!=null&&maps.size()>0){
+            for (Map map : maps) {
+                long brandId = Long.parseLong(map.get("id").toString());
+                BrandQuery brandQuery = new BrandQuery();
+                brandQuery.createCriteria().andIdEqualTo(brandId);
+                List<Brand> brandsList = brandDao.selectByExample(brandQuery);
+                map.put("options",brandsList);
+            }
+        }
+        return maps;
+    }
+
+
 }

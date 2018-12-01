@@ -191,13 +191,11 @@ public class BrandServiceImpl   implements BrandService {
 
 
 
-    /**
-     * 查询品牌列表项,用作模板关联品牌新增时下拉框数据显示
-     * @return
-     */
+    /*** 查询品牌列表项,用作模板关联品牌新增时下拉框数据显示*/
     @Override
     public List<Map<String, String>> selectOptionList() {
-        //return brandDao.selectOptionList();
-        return null;
+        return brandDao.selectOptionList();
+    //return null
     }
+
 }

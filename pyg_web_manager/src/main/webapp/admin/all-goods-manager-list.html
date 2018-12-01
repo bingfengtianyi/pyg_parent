@@ -66,7 +66,7 @@
                 <td>{{(paginationConf.currentPage-1)*(paginationConf.itemsPerPage)+$index+1}}</td>
                 <td>{{entity.sellerId}}</td>
                 <td>{{entity.goodsName}}</td>
-                <td>{{entity.auditStatus}}</td>
+                <td>{{entity.auditStatus=='0'?'已审核':'未审核'}}</td>
                 <td>{{entity.brandId}}</td>
                 <td>{{entity.price}}</td>
             </tr>

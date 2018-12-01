@@ -53,4 +53,9 @@ public interface TypeTemplateService {
     List<Map> findBySpecList(long id);
 
     List<TypeTemplate> findAll();
+
+
+    /*** 根据模板id查找规格和规格选项*/
+    List<Map> findByBrandList(long id);
+
 }

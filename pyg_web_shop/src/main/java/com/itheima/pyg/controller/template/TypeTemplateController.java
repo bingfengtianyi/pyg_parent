@@ -95,4 +95,16 @@ public class TypeTemplateController {
      * */
 
 
+    /**
+     * 根据模板id查询对应的规格和规格选项
+     * @param id
+     * @return
+     */
+    @RequestMapping("findByBrandList")
+    public List<Map>    findByBrandList(long id){
+        return typeTemplateService.findByBrandList(id);
+    }
+
+
+
 }

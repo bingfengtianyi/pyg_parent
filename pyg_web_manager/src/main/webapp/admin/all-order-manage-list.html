@@ -83,8 +83,8 @@
                 <td>{{(paginationConf.currentPage-1)*(paginationConf.itemsPerPage)+$index+1}}</td>
                 <td>{{entity.orderId}}</td>
                 <td>{{entity.payment}}</td>
-                <td>{{entity.paymentType}}</td>
-                <td>{{entity.status}}</td>
+                <td>{{entity.paymentType=='1'?'在线支付':'货到付款'}}</td>
+                <td>{{entity.status=='0'?'未支付':'已支付'}}</td>
                 <td>{{entity.createTime}}</td>
             </tr>
 

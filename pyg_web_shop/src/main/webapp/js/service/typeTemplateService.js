@@ -33,4 +33,10 @@ app.service('typeTemplateService',function($http){
 	this.findBySpecList=function(id){
 		return $http.get('../typeTemplate/findBySpecList.action?id='+id);
 	}
+
+
+    this.findByBrandList=function(id){
+        return $http.get('../typeTemplate/findByBrandList.action?id='+id);
+    }
+
 });
